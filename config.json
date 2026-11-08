@@ -1,0 +1,231 @@
+{
+  "defaults": {
+    "reveal_keywords": [
+      "card list",
+      "cardlist",
+      "reveal",
+      "new card",
+      "spoiler",
+      "preview",
+      "first look",
+      "sneak peek",
+      "card gallery",
+      "showcase",
+      "カードリスト",
+      "新カード",
+      "公開"
+    ]
+  },
+  "webhooks": {
+    "market_movers": "WEBHOOK_MARKET_MOVERS",
+    "sales_anomalies": "WEBHOOK_SALES_ANOMALIES",
+    "buy_sell": "WEBHOOK_BUY_SELL"
+  },
+  "news_sources": [
+    {
+      "id": "onepiece-en",
+      "game": "One Piece",
+      "publisher": "Bandai",
+      "region": "US / Global EN",
+      "flag": "🇺🇸",
+      "url": "https://en.onepiece-cardgame.com/news/",
+      "link_regex": "onepiece-cardgame\\.com/news/\\d+_\\d+\\.html",
+      "news_webhook": "WEBHOOK_TCG_NEWS",
+      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "color": 15158332
+    },
+    {
+      "id": "onepiece-jp",
+      "game": "One Piece",
+      "publisher": "Bandai",
+      "region": "Japan",
+      "flag": "🇯🇵",
+      "url": "https://www.onepiece-cardgame.com/news/",
+      "link_regex": "www\\.onepiece-cardgame\\.com/(news|topics)/[^\"'?#]+\\.(html|php)",
+      "news_webhook": "WEBHOOK_TCG_NEWS",
+      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "color": 15158332
+    },
+    {
+      "id": "pokemon-us",
+      "game": "Pokémon TCG",
+      "publisher": "The Pokémon Company",
+      "region": "US",
+      "flag": "🇺🇸",
+      "url": "https://www.pokemon.com/us/pokemon-news",
+      "link_regex": "pokemon\\.com/us/pokemon-news/[a-z0-9-]+/?$",
+      "include_keywords": [
+        "TCG",
+        "Trading Card",
+        "Expansion",
+        "Booster",
+        "Elite Trainer",
+        "card"
+      ],
+      "news_webhook": "WEBHOOK_TCG_NEWS",
+      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "color": 16766720
+    },
+    {
+      "id": "pokemon-jp",
+      "game": "Pokémon TCG",
+      "publisher": "The Pokémon Company",
+      "region": "Japan",
+      "flag": "🇯🇵",
+      "url": "https://www.pokemon-card.com/info/",
+      "link_regex": "pokemon-card\\.com/info/[^\"'?#]+",
+      "news_webhook": "WEBHOOK_TCG_NEWS",
+      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "color": 16766720
+    },
+    {
+      "id": "riftbound",
+      "game": "Riftbound",
+      "publisher": "Riot Games",
+      "region": "Global",
+      "flag": "🌐",
+      "url": "https://riftbound.leagueoflegends.com/en-us/news/",
+      "link_regex": "riftbound\\.leagueoflegends\\.com/en-us/news/[^\"'?#]+/[^\"'?#]+",
+      "news_webhook": "WEBHOOK_TCG_NEWS",
+      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "color": 3447003
+    },
+    {
+      "id": "naruto",
+      "enabled": false,
+      "game": "Naruto Card Game",
+      "publisher": "Bandai",
+      "region": "Global",
+      "flag": "🍥",
+      "url": "PUT_OFFICIAL_NARUTO_CARD_GAME_NEWS_URL_HERE",
+      "link_regex": "news",
+      "news_webhook": "WEBHOOK_TCG_NEWS",
+      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "color": 15105570
+    }
+  ],
+  "tournament_games": [
+    {
+      "name": "Pokémon TCG",
+      "webhook": "WEBHOOK_RESULTS_POKEMON",
+      "color": 16766720,
+      "limitless_game": "PTCG",
+      "min_players": 64,
+      "result_pages": [
+        {
+          "id": "limitless-pokemon-majors",
+          "label": "Limitless TCG (majors)",
+          "url": "https://limitlesstcg.com/tournaments",
+          "link_regex": "limitlesstcg\\.com/tournaments/\\d+$",
+          "event_type": "auto"
+        }
+      ],
+      "enabled": false,
+      "note": "Competitive Pokémon ignored by request; set enabled true to turn back on"
+    },
+    {
+      "name": "One Piece",
+      "webhook": "WEBHOOK_RESULTS_ONEPIECE",
+      "color": 15158332,
+      "limitless_game": "",
+      "min_players": 32,
+      "result_pages": [
+        {
+          "id": "limitless-op",
+          "label": "Limitless TCG (One Piece)",
+          "url": "https://onepiece.limitlesstcg.com/tournaments",
+          "link_regex": "onepiece\\.limitlesstcg\\.com/tournaments/\\d+$",
+          "event_type": "auto"
+        },
+        {
+          "id": "chinoizecup",
+          "label": "ChinoizeCup Stats",
+          "url": "https://chinoizecupstats.com/tournaments",
+          "link_regex": "chinoizecupstats\\.com/tournaments?/[^\"'?#]+",
+          "event_type": "Online"
+        }
+      ]
+    },
+    {
+      "name": "Riftbound",
+      "webhook": "WEBHOOK_RESULTS_RIFTBOUND",
+      "color": 3447003,
+      "limitless_game": "",
+      "min_players": 32,
+      "result_pages": [
+        {
+          "id": "riftdecks",
+          "label": "RiftDecks",
+          "url": "https://riftdecks.com/riftbound-tournaments",
+          "link_regex": "riftdecks\\.com/riftbound-tournaments/[^\"'?#]+",
+          "event_type": "auto",
+          "max_new": 4
+        }
+      ]
+    },
+    {
+      "name": "Naruto Card Game",
+      "enabled": false,
+      "webhook": "WEBHOOK_RESULTS_NARUTO",
+      "color": 15105570,
+      "limitless_game": "",
+      "result_pages": []
+    }
+  ],
+  "market": {
+    "post_hour_pt": 21,
+    "min_price": 3.0,
+    "top_n": 10,
+    "anomaly_pct": 40,
+    "anomaly_min_price": 20.0,
+    "graded_mover_pct": 10,
+    "graded_anomaly_pct": 25,
+    "graded_volume_spike": 5,
+    "sealed_min_price": 20.0,
+    "sealed_anomaly_pct": 20
+  },
+  "market_games": [
+    {
+      "name": "One Piece",
+      "slug": "onepiece",
+      "emoji": "🏴‍☠️",
+      "color": 15158332,
+      "tcgcsv_category_match": "One Piece Card Game",
+      "max_sets": 150,
+      "number_regex": "^(OP|ST|EB|PRB|P)\\d*-\\d+",
+      "webhook": "WEBHOOK_MARKET_ONEPIECE"
+    },
+    {
+      "name": "Pokémon",
+      "slug": "pokemon",
+      "emoji": "⚡",
+      "color": 16766720,
+      "tcgcsv_category_id": 3,
+      "max_sets": 80,
+      "number_regex": "^\\d+\\s*/\\s*\\d+$|^(SVP|SWSH|SM|XY|BW)\\s?-?\\d+",
+      "webhook": "WEBHOOK_MARKET_POKEMON"
+    },
+    {
+      "name": "Riftbound",
+      "slug": "riftbound",
+      "emoji": "🌀",
+      "color": 3447003,
+      "tcgcsv_category_match": "Riftbound",
+      "max_sets": 40,
+      "number_regex": "^[A-Z]{3}\\s?-?\\s?\\d+",
+      "webhook": "WEBHOOK_MARKET_RIFTBOUND"
+    },
+    {
+      "name": "Naruto Card Game",
+      "slug": "naruto",
+      "enabled": false,
+      "emoji": "🍥",
+      "tcgcsv_category_match": "Naruto",
+      "number_regex": "^NARUTO_SET_CODE_TBD"
+    }
+  ],
+  "comps": {
+    "monthly_budget": 100,
+    "reserve_for_price_checks": 60
+  }
+}
