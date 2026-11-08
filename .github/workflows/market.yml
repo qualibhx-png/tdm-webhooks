@@ -1,0 +1,37 @@
+name: 9pm PT market report
+on:
+  schedule:
+    - cron: '2 4 * * *'
+    - cron: '2 5 * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: tdm-state
+  cancel-in-progress: false
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run
+        run: python scripts/market_report.py 
+        env:
+          WEBHOOK_MARKET_MOVERS: ${{ secrets.WEBHOOK_MARKET_MOVERS }}
+          WEBHOOK_SALES_ANOMALIES: ${{ secrets.WEBHOOK_SALES_ANOMALIES }}
+          PRICECHARTING_TOKEN: ${{ secrets.PRICECHARTING_TOKEN }}
+          COMPSAPI_KEY: ${{ secrets.COMPSAPI_KEY }}
+          WEBHOOK_MARKET_POKEMON: ${{ secrets.WEBHOOK_MARKET_POKEMON }}
+          WEBHOOK_MARKET_ONEPIECE: ${{ secrets.WEBHOOK_MARKET_ONEPIECE }}
+          WEBHOOK_MARKET_RIFTBOUND: ${{ secrets.WEBHOOK_MARKET_RIFTBOUND }}
+      - name: Save state
+        if: always()
+        run: |
+          git config user.name "tdm-webhooks"
+          git config user.email "actions@users.noreply.github.com"
+          git add data
+          git diff --cached --quiet || (git commit -m "state: 9pm PT market report [skip ci]" && git pull --rebase && git push)
