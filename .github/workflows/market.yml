@@ -28,6 +28,8 @@ jobs:
           WEBHOOK_MARKET_POKEMON: ${{ secrets.WEBHOOK_MARKET_POKEMON }}
           WEBHOOK_MARKET_ONEPIECE: ${{ secrets.WEBHOOK_MARKET_ONEPIECE }}
           WEBHOOK_MARKET_RIFTBOUND: ${{ secrets.WEBHOOK_MARKET_RIFTBOUND }}
+          WEBHOOK_PLAYABLE_MOVERS: ${{ secrets.WEBHOOK_PLAYABLE_MOVERS }}
+          WEBHOOK_COLLECTOR_MOVERS: ${{ secrets.WEBHOOK_COLLECTOR_MOVERS }}
       - name: Save state
         if: always()
         run: |
