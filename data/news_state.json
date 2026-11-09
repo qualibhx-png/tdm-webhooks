@@ -2,6 +2,28 @@
  "onepiece-en": [
   "https://en.onepiece-cardgame.com/news/02_382.html"
  ],
+ "onepiece-events": [
+  "https://en.onepiece-cardgame.com/events/official-shop.html",
+  "https://en.onepiece-cardgame.com/events/Finals-2026s2-lcq.html",
+  "https://en.onepiece-cardgame.com/events/26-27_Finals_Season_2.html",
+  "https://en.onepiece-cardgame.com/events/Finals-2026s2-side.html",
+  "https://en.onepiece-cardgame.com/events/regional-season2-26-27.html",
+  "https://en.onepiece-cardgame.com/events/regional-season2-side.html",
+  "https://en.onepiece-cardgame.com/events/storecs_october.html",
+  "https://en.onepiece-cardgame.com/events/bcgfest26-27-london.html",
+  "https://en.onepiece-cardgame.com/events/bcgfest25-26-orlando.html",
+  "https://en.onepiece-cardgame.com/events/treasure-cup-dec-2026.html",
+  "https://en.onepiece-cardgame.com/events/bcgfest26-27.html",
+  "https://en.onepiece-cardgame.com/events/extra-grand-battle-l-2026.html",
+  "https://en.onepiece-cardgame.com/events/treasure-cup-august-2026.html",
+  "https://en.onepiece-cardgame.com/events/flameflame_Coliseum.html",
+  "https://en.onepiece-cardgame.com/events/02_553.html",
+  "https://en.onepiece-cardgame.com/events/store-tournament-op18.html",
+  "https://en.onepiece-cardgame.com/events/heroines-battle-vol2.html",
+  "https://en.onepiece-cardgame.com/events/02_452.html",
+  "https://en.onepiece-cardgame.com/events/pirates-party-vol4-2026.html",
+  "https://en.onepiece-cardgame.com/events/malltour2026.html"
+ ],
  "onepiece-jp": [
   "https://www.onepiece-cardgame.com/news/restriction-261012.html",
   "https://www.onepiece-cardgame.com/news/01_379.html"
@@ -133,8 +155,8 @@
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/riftbound-world-showcase",
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/all-eyes-on-rc-europe",
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/riftbound-2027-premier-play",
-  "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/radiance-rules-faq-and-clarifications",
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/riftbound-2027-local-play",
+  "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/radiance-rules-faq-and-clarifications",
   "https://riftbound.leagueoflegends.com/en-us/news/announcements/riftbounds-2026-drawings",
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/testing-start-of-game-rules",
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/regional-championships-competitive-integrity-prizing",
