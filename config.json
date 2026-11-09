@@ -253,7 +253,8 @@
   "meta": {
     "cups_to_scan": 15,
     "top_cut": 8,
-    "cups_for_playables": 6
+    "cups_for_playables": 6,
+    "min_players": 8
   },
   "leader_channels": [
     {
