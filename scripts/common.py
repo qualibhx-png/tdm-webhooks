@@ -108,6 +108,38 @@ def post_webhook(env_name, payload, thread_name=None, dry_run=False):
             raise RuntimeError(f"Webhook {env_name} failed {e.code}: {e.read()[:300]}")
 
 
+def upsert_webhook(env_name, payload, key, dry_run=False):
+    """Post once, then edit that same message on later runs (keeps channels tidy).
+    Message ids live in data/webhook_messages.json under `key`; a new key means a fresh post."""
+    url = webhook_url(env_name)
+    if dry_run or not url:
+        return post_webhook(env_name, payload, dry_run=dry_run)
+    ids = load_json("webhook_messages.json", {})
+    body = dict(payload)
+    body.setdefault("allowed_mentions", {"parse": []})
+    data = json.dumps(body).encode()
+    mid = ids.get(key)
+    if mid:
+        req = urllib.request.Request(f"{url}/messages/{mid}", data=data, method="PATCH",
+                                     headers={"Content-Type": "application/json", "User-Agent": UA})
+        try:
+            with urllib.request.urlopen(req, timeout=30):
+                time.sleep(1.2)
+                return mid
+        except urllib.error.HTTPError as e:
+            if e.code not in (404, 403):
+                raise RuntimeError(f"Webhook edit {env_name} failed {e.code}: {e.read()[:300]}")
+    req = urllib.request.Request(url + "?wait=true", data=data, method="POST",
+                                 headers={"Content-Type": "application/json", "User-Agent": UA})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        mid = json.loads(r.read() or b"{}").get("id")
+    time.sleep(1.2)
+    if mid:
+        ids[key] = mid
+        save_json("webhook_messages.json", ids)
+    return mid
+
+
 def embed(title, url=None, description=None, color=0x5865F2, fields=None, footer=None):
     e = {"title": title[:256], "color": color}
     if url:
