@@ -22,6 +22,7 @@ jobs:
         env:
           WEBHOOK_TCG_NEWS: ${{ secrets.WEBHOOK_TCG_NEWS }}
           WEBHOOK_SET_REVEALS: ${{ secrets.WEBHOOK_SET_REVEALS }}
+          WEBHOOK_EVENT_WATCH: ${{ secrets.WEBHOOK_EVENT_WATCH }}
       - name: Save state
         if: always()
         run: |
