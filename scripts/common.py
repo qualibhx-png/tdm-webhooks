@@ -69,6 +69,18 @@ def webhook_url(env_name):
     return url or None
 
 
+def with_ping(payload, role_key, cfg=None):
+    """Add a role mention (from config.roles) to a webhook payload. Only that role can be pinged."""
+    cfg = cfg or load_config()
+    rid = str((cfg.get("roles") or {}).get(role_key) or "").strip()
+    if not rid:
+        return payload
+    p = dict(payload)
+    p["content"] = (f"<@&{rid}> " + p.get("content", "")).strip()
+    p["allowed_mentions"] = {"parse": [], "roles": [rid]}
+    return p
+
+
 def post_webhook(env_name, payload, thread_name=None, dry_run=False):
     """POST to a Discord webhook. thread_name is required for forum channels."""
     url = webhook_url(env_name)
