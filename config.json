@@ -19,7 +19,11 @@
   "webhooks": {
     "market_movers": "WEBHOOK_MARKET_MOVERS",
     "sales_anomalies": "WEBHOOK_SALES_ANOMALIES",
-    "buy_sell": "WEBHOOK_BUY_SELL"
+    "buy_sell": "WEBHOOK_BUY_SELL",
+    "op_meta": "WEBHOOK_OP_META",
+    "playable_movers": "WEBHOOK_PLAYABLE_MOVERS",
+    "collector_movers": "WEBHOOK_COLLECTOR_MOVERS",
+    "event_watch": "WEBHOOK_EVENT_WATCH"
   },
   "news_sources": [
     {
@@ -102,6 +106,17 @@
       "news_webhook": "WEBHOOK_TCG_NEWS",
       "reveal_webhook": "WEBHOOK_SET_REVEALS",
       "color": 15105570
+    },
+    {
+      "id": "onepiece-events",
+      "kind": "event",
+      "game": "One Piece",
+      "label": "Bandai official events",
+      "flag": "🇺🇸",
+      "url": "https://en.onepiece-cardgame.com/events/",
+      "link_regex": "onepiece-cardgame\\.com/events/[^\"'?#]+\\.html",
+      "webhook": "WEBHOOK_EVENT_WATCH",
+      "color": 15105570
     }
   ],
   "tournament_games": [
@@ -182,7 +197,8 @@
     "graded_anomaly_pct": 25,
     "graded_volume_spike": 5,
     "sealed_min_price": 20.0,
-    "sealed_anomaly_pct": 20
+    "sealed_anomaly_pct": 20,
+    "split_min_move_pct": 8
   },
   "market_games": [
     {
@@ -227,5 +243,95 @@
   "comps": {
     "monthly_budget": 100,
     "reserve_for_price_checks": 60
-  }
+  },
+  "roles": {
+    "set_reveals": "1569063401433604096",
+    "tournament_results": "1569063521734623315",
+    "market_alerts": "1569063430436950178",
+    "event_alerts": "1569185577658486795"
+  },
+  "meta": {
+    "cups_to_scan": 15,
+    "top_cut": 8,
+    "cups_for_playables": 6
+  },
+  "leader_channels": [
+    {
+      "game": "onepiece",
+      "label": "Enel",
+      "emoji": "🟣",
+      "webhook": "WEBHOOK_LATEST5_ENEL",
+      "codes": [
+        "OP05-098"
+      ]
+    },
+    {
+      "game": "onepiece",
+      "label": "Luffy (Blue/Green)",
+      "emoji": "🔵🟢",
+      "webhook": "WEBHOOK_LATEST5_LUFFY",
+      "name": "Monkey.D.Luffy",
+      "colors": [
+        "Blue",
+        "Green"
+      ]
+    },
+    {
+      "game": "onepiece",
+      "label": "Nami (Blue/Yellow)",
+      "emoji": "🔵🟡",
+      "webhook": "WEBHOOK_LATEST5_NAMI",
+      "name": "Nami",
+      "colors": [
+        "Blue",
+        "Yellow"
+      ]
+    },
+    {
+      "game": "onepiece",
+      "label": "Teach",
+      "emoji": "⚫🟡",
+      "webhook": "WEBHOOK_LATEST5_TEACH",
+      "codes": [
+        "OP16-080"
+      ]
+    },
+    {
+      "game": "onepiece",
+      "label": "Xebec",
+      "emoji": "🔵",
+      "webhook": "WEBHOOK_LATEST5_XEBEC",
+      "codes": [
+        "OP17-039"
+      ]
+    },
+    {
+      "game": "onepiece",
+      "label": "Imu",
+      "emoji": "⚫",
+      "webhook": "WEBHOOK_LATEST5_IMU",
+      "name": "Imu"
+    },
+    {
+      "game": "riftbound",
+      "label": "Sett",
+      "emoji": "🟠🟡",
+      "webhook": "WEBHOOK_LATEST5_SETT",
+      "note": "no Riftbound list source yet"
+    },
+    {
+      "game": "riftbound",
+      "label": "Volibear",
+      "emoji": "🟠🔴",
+      "webhook": "WEBHOOK_LATEST5_VOLIBEAR",
+      "note": "no Riftbound list source yet"
+    },
+    {
+      "game": "riftbound",
+      "label": "Teemo",
+      "emoji": "🔵🟣",
+      "webhook": "WEBHOOK_LATEST5_TEEMO",
+      "note": "no Riftbound list source yet"
+    }
+  ]
 }
