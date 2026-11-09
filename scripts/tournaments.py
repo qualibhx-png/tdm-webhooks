@@ -13,7 +13,7 @@ import re
 import sys
 from datetime import datetime, timedelta, timezone
 
-from common import embed, extract_links, http_get, http_json, load_config, load_json, log, post_webhook, save_json, strip_tags
+from common import embed, extract_links, http_get, http_json, load_config, load_json, log, post_webhook, save_json, strip_tags, with_ping
 
 STATE = "tournament_state.json"
 LIMITLESS = "https://play.limitlesstcg.com/api"
@@ -94,7 +94,37 @@ def parse_top4(html):
     return [(ORD[p], t) for p, t in sorted(rows)]
 
 
+def chinoize_events(game_cfg, src, seen):
+    """ChinoizeCup Stats: real standings with leader, color and decklist links."""
+    from chinoize import color_emoji, list_tournaments, tournament
+    colors = load_json("op_leader_colors.json", {})
+    out = []
+    for t in list_tournaments(limit=src.get("max_new", 6)):
+        eid = f"page:{t['url']}"
+        if eid in seen:
+            continue
+        try:
+            ev = tournament(t["id"])
+        except Exception as e:
+            log(f"[chinoize] {t['id']}: {e}")
+            continue
+        if not ev["standings"]:
+            continue  # not finished yet
+        top = ev["standings"][:4]
+        rows = [(ORD.get(r["place"], f"{r['place']}th"),
+                 f"**{r['player']}** — {color_emoji(r['code'], colors)} [{r['leader']}]({r['decklist']})") for r in top]
+        counts = {}
+        for r in ev["standings"][:8]:
+            counts[r["leader"]] = counts.get(r["leader"], 0) + 1
+        summary = ", ".join(f"{k} x{v}" for k, v in sorted(counts.items(), key=lambda kv: -kv[1]))
+        out.append(dict(id=eid, name=ev["name"], online=True, url=ev["url"], players=ev["players"], date=ev["date"],
+                        rows=rows, source=src["label"], extra=f"📊 Top 8 leaders: {summary}"))
+    return out
+
+
 def page_events(game_cfg, src, seen):
+    if "chinoizecupstats" in src.get("url", ""):
+        return chinoize_events(game_cfg, src, seen)
     out = []
     try:
         html = http_get(src["url"])
@@ -123,9 +153,9 @@ def post_event(game_cfg, ev, test):
     meta = [x for x in [ev.get("date"), f"{ev['players']} players" if ev.get("players") else None, f"Source: {ev['source']}"] if x]
     payload = {"username": f"{game_cfg['name']} Results",
                "embeds": [embed(f"{t} | {ev['name']}", url=ev["url"], color=game_cfg.get("color", 0x5865F2),
-                                description="\n".join(lines) + f"\n\n[Full standings & decklists]({ev['url']})",
+                                description="\n".join(lines) + (f"\n\n{ev['extra']}" if ev.get('extra') else "") + f"\n\n[Full standings & decklists]({ev['url']})",
                                 footer=" · ".join(meta))]}
-    post_webhook(game_cfg["webhook"], payload, thread_name=title, dry_run=test)
+    post_webhook(game_cfg["webhook"], with_ping(payload, "tournament_results"), thread_name=title, dry_run=test)
 
 
 def main():
