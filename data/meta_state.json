@@ -1,0 +1,214 @@
+{
+ "last_rankings": [
+  {
+   "code": "OP13-001",
+   "entries": 66,
+   "leader": "Monkey.D.Luffy",
+   "play_rate": 13.4,
+   "rank": 1,
+   "record": "184-127-0",
+   "top4": 12.1,
+   "win_rate": 59.2
+  },
+  {
+   "code": "OP14-041",
+   "entries": 15,
+   "leader": "Boa Hancock",
+   "play_rate": 3.0,
+   "rank": 2,
+   "record": "31-30-0",
+   "top4": 13.3,
+   "win_rate": 50.8
+  },
+  {
+   "code": "OP16-080",
+   "entries": 7,
+   "leader": "Marshall.D.Teach",
+   "play_rate": 1.4,
+   "rank": 3,
+   "record": "14-13-0",
+   "top4": 14.3,
+   "win_rate": 51.9
+  },
+  {
+   "code": "OP17-039",
+   "entries": 85,
+   "leader": "Rocks.D.Xebec",
+   "play_rate": 17.3,
+   "rank": 4,
+   "record": "188-196-0",
+   "top4": 1.2,
+   "win_rate": 49.0
+  },
+  {
+   "code": "OP17-058",
+   "entries": 18,
+   "leader": "Kaido",
+   "play_rate": 3.7,
+   "rank": 5,
+   "record": "38-45-0",
+   "top4": 5.6,
+   "win_rate": 45.8
+  },
+  {
+   "code": "OP05-098",
+   "entries": 32,
+   "leader": "Enel",
+   "play_rate": 6.5,
+   "rank": 6,
+   "record": "91-75-0",
+   "top4": 6.3,
+   "win_rate": 54.8
+  },
+  {
+   "code": "OP08-058",
+   "entries": 5,
+   "leader": "Charlotte Pudding",
+   "play_rate": 1.0,
+   "rank": 7,
+   "record": "11-8-0",
+   "top4": 20.0,
+   "win_rate": 57.9
+  },
+  {
+   "code": "ST10-002",
+   "entries": 15,
+   "leader": "Monkey.D.Luffy",
+   "play_rate": 3.0,
+   "rank": 8,
+   "record": "43-32-0",
+   "top4": 6.7,
+   "win_rate": 57.3
+  },
+  {
+   "code": "OP11-022",
+   "entries": 15,
+   "leader": "Shirahoshi",
+   "play_rate": 3.0,
+   "rank": 9,
+   "record": "34-26-0",
+   "top4": 6.7,
+   "win_rate": 56.7
+  },
+  {
+   "code": "OP09-042",
+   "entries": 33,
+   "leader": "Buggy",
+   "play_rate": 6.7,
+   "rank": 10,
+   "record": "90-73-0",
+   "top4": 3.0,
+   "win_rate": 55.2
+  },
+  {
+   "code": "OP12-061",
+   "entries": 26,
+   "leader": "Donquixote Rosinante",
+   "play_rate": 5.3,
+   "rank": 11,
+   "record": "62-65-0",
+   "top4": 3.8,
+   "win_rate": 48.8
+  },
+  {
+   "code": "OP13-004",
+   "entries": 25,
+   "leader": "Sabo",
+   "play_rate": 5.1,
+   "rank": 12,
+   "record": "61-64-0",
+   "top4": 4.0,
+   "win_rate": 48.8
+  },
+  {
+   "code": "EB05-010",
+   "entries": 9,
+   "leader": "Nico Robin",
+   "play_rate": 1.8,
+   "rank": 13,
+   "record": "26-23-0",
+   "top4": 0.0,
+   "win_rate": 53.1
+  },
+  {
+   "code": "OP14-001",
+   "entries": 13,
+   "leader": "Trafalgar Law",
+   "play_rate": 2.6,
+   "rank": 14,
+   "record": "30-34-0",
+   "top4": 0.0,
+   "win_rate": 46.9
+  },
+  {
+   "code": "OP17-079",
+   "entries": 14,
+   "leader": "Monkey.D.Luffy",
+   "play_rate": 2.8,
+   "rank": 15,
+   "record": "28-32-0",
+   "top4": 0.0,
+   "win_rate": 46.7
+  },
+  {
+   "code": "OP10-003",
+   "entries": 8,
+   "leader": "Sugar",
+   "play_rate": 1.6,
+   "rank": 17,
+   "record": "14-19-0",
+   "top4": 0.0,
+   "win_rate": 42.4
+  },
+  {
+   "code": "OP15-058",
+   "entries": 11,
+   "leader": "Enel",
+   "play_rate": 2.2,
+   "rank": 18,
+   "record": "16-22-0",
+   "top4": 0.0,
+   "win_rate": 42.1
+  },
+  {
+   "code": "OP16-022",
+   "entries": 10,
+   "leader": "Monkey.D.Luffy",
+   "play_rate": 2.0,
+   "rank": 19,
+   "record": "11-16-0",
+   "top4": 0.0,
+   "win_rate": 40.7
+  },
+  {
+   "code": "OP14-080",
+   "entries": 5,
+   "leader": "Gecko Moria",
+   "play_rate": 1.0,
+   "rank": 20,
+   "record": "10-15-0",
+   "top4": 0.0,
+   "win_rate": 40.0
+  },
+  {
+   "code": "OP17-020",
+   "entries": 7,
+   "leader": "Shanks",
+   "play_rate": 1.4,
+   "rank": 21,
+   "record": "8-18-0",
+   "top4": 0.0,
+   "win_rate": 30.8
+  },
+  {
+   "code": "OP09-062",
+   "entries": 5,
+   "leader": "Nico Robin",
+   "play_rate": 1.0,
+   "rank": 22,
+   "record": "6-15-0",
+   "top4": 0.0,
+   "win_rate": 28.6
+  }
+ ]
+}
