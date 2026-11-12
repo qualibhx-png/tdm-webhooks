@@ -2,7 +2,12 @@ name: Official news & reveals
 on:
   schedule:
     - cron: '*/30 * * * *'
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      seed_latest:
+        description: 'Go-live: remember everything, post only the newest reveal from this source id (leave blank for a normal run)'
+        required: false
+        default: ''
 permissions:
   contents: write
 concurrency:
@@ -18,7 +23,8 @@ jobs:
         with:
           python-version: '3.12'
       - name: Run
-        run: python scripts/news_watch.py 
+        run: |
+          if [ -n "${{ github.event.inputs.seed_latest }}" ]; then python scripts/news_watch.py --seed-latest "${{ github.event.inputs.seed_latest }}"; else python scripts/news_watch.py; fi
         env:
           WEBHOOK_TCG_NEWS: ${{ secrets.WEBHOOK_TCG_NEWS }}
           WEBHOOK_SET_REVEALS: ${{ secrets.WEBHOOK_SET_REVEALS }}
