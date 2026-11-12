@@ -1,0 +1,45 @@
+name: Preview all feeds (staff-alerts only)
+# Manual only. Sends ONE sample of every live feed to #staff-alerts, each labelled with the
+# channel it would really go to. No role pings, no state saved, real channels untouched.
+on:
+  workflow_dispatch: {}
+permissions:
+  contents: read
+jobs:
+  preview:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      TDM_PREVIEW: '1'
+      PREVIEW_WEBHOOK: ${{ secrets.WEBHOOK_EVENT_WATCH }}
+      WEBHOOK_SET_REVEALS: ${{ secrets.WEBHOOK_SET_REVEALS }}
+      WEBHOOK_TCG_NEWS: ${{ secrets.WEBHOOK_TCG_NEWS }}
+      WEBHOOK_EVENT_WATCH: ${{ secrets.WEBHOOK_EVENT_WATCH }}
+      WEBHOOK_RESULTS_ONEPIECE: ${{ secrets.WEBHOOK_RESULTS_ONEPIECE }}
+      WEBHOOK_RESULTS_RIFTBOUND: ${{ secrets.WEBHOOK_RESULTS_RIFTBOUND }}
+      WEBHOOK_MARKET_MOVERS: ${{ secrets.WEBHOOK_MARKET_MOVERS }}
+      WEBHOOK_SALES_ANOMALIES: ${{ secrets.WEBHOOK_SALES_ANOMALIES }}
+      WEBHOOK_MARKET_POKEMON: ${{ secrets.WEBHOOK_MARKET_POKEMON }}
+      WEBHOOK_MARKET_ONEPIECE: ${{ secrets.WEBHOOK_MARKET_ONEPIECE }}
+      WEBHOOK_MARKET_RIFTBOUND: ${{ secrets.WEBHOOK_MARKET_RIFTBOUND }}
+      WEBHOOK_PLAYABLE_MOVERS: ${{ secrets.WEBHOOK_PLAYABLE_MOVERS }}
+      WEBHOOK_COLLECTOR_MOVERS: ${{ secrets.WEBHOOK_COLLECTOR_MOVERS }}
+      WEBHOOK_OP_META: ${{ secrets.WEBHOOK_OP_META }}
+      LIMITLESS_API_KEY: ${{ secrets.LIMITLESS_API_KEY }}
+      PRICECHARTING_TOKEN: ${{ secrets.PRICECHARTING_TOKEN }}
+      COMPSAPI_KEY: ${{ secrets.COMPSAPI_KEY }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Browser for decklist screenshots
+        run: pip install playwright && python -m playwright install --with-deps chromium
+      - name: Tournament results
+        run: python scripts/tournaments.py || true
+      - name: News, set reveals, event watch
+        run: python scripts/news_watch.py || true
+      - name: OP meta rankings
+        run: python scripts/meta_feeds.py --rankings || true
+      - name: Market reports
+        run: python scripts/market_report.py --force || true
