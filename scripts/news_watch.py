@@ -21,6 +21,31 @@ MONTHS = "january february march april may june july august september october no
 DATE_RX = re.compile(r"^\s*(" + "|".join(MONTHS) + r")\s+(\d{1,2}),\s*(\d{4})\s*", re.I)
 
 
+def event_info(url, text):
+    """Readable title + details for an events-page link, or None for menu/category links.
+    Bandai cards read like 'OFFICIAL EVENTS Tournament <name> Event Period: <when> Regulation: <fmt> <blurb>'."""
+    t = re.sub(r"\s+", " ", text or "").strip()
+    if "Event Period:" not in t:
+        try:  # short/generic link text: use the page's own headline instead
+            page = http_get(url)
+            m = re.search(r"<h1[^>]*>(.*?)</h1>", page, re.S) or re.search(r"<title>(.*?)</title>", page, re.S)
+            head = re.sub(r"<[^>]+>|\s+", " ", m.group(1)).split("｜")[0].split("|")[0].strip() if m else ""
+        except Exception:
+            head = ""
+        if not head or len(head.split()) <= 3 and head.upper() == head:
+            return None  # e.g. the "OFFICIAL SHOP" menu tab, not an event
+        return {"name": head, "period": "", "reg": "", "blurb": "", "kind": ""}
+    t = re.sub(r"^OFFICIAL EVENTS\s+", "", t, flags=re.I)
+    kind = ""
+    m = re.match(r"^(Tournament|Event|Casual|Campaign|Release Event|Side Event)\s+", t)
+    if m:
+        kind, t = m.group(1), t[m.end():]
+    name, _, rest = t.partition("Event Period:")
+    period, _, rest = rest.partition("Regulation:")
+    reg, _, blurb = rest.strip().partition(" ")
+    return {"name": name.strip(), "period": period.strip(), "reg": reg.strip(), "blurb": blurb.strip(), "kind": kind}
+
+
 def tidy(links):
     """Strip 'November 6, 2026 PRODUCTS ' style prefixes and sort newest first when dated."""
     out = []
@@ -110,6 +135,8 @@ def main():
         first_run = not seen
         new = [(u, t) for u, t in links if u not in seen]
         if PREVIEW:  # newest item + newest reveal from each source, regardless of what's been seen
+            if src.get("kind") == "event":  # first real event, not a menu tab
+                links = [l for l in links if "Event Period:" in l[1]] or links
             rev = next(((u, t) for u, t in links if classify(t, src, cfg) == "reveal"), None)
             new, first_run = list(dict.fromkeys([x for x in [rev] + links[:1] if x])), False
         if first_run:
@@ -119,10 +146,18 @@ def main():
                 if src.get("kind") == "event":
                     # Raw event-page alerts go to the private #staff-alerts channel; staff repost real
                     # signups in #event-signups with the template (and the Event Alerts ping).
+                    info = event_info(url, title)
+                    if not info:
+                        log(f"[{sid}] skipping menu link: {title}")
+                        continue
+                    details = " · ".join(x for x in [f"📅 {info['period']}" if info["period"] else "",
+                                                     f"🃏 {info['reg']}" if info["reg"] else "",
+                                                     info["kind"]] if x)
+                    desc = "\n".join(x for x in [details, info["blurb"][:300],
+                                                 f"New on the {src['game']} events page. Check it, then repost in #📅-event-signups if registration is open."] if x)
                     post_webhook(src.get("webhook", "WEBHOOK_EVENT_WATCH"), {
                         "username": "TDM Event Watch",
-                        "embeds": [embed(title, url=url, color=0xE67E22,
-                                         description=f"📅 New on the {src['game']} events page. Check it, then repost in #📅-event-signups if registration is open.",
+                        "embeds": [embed(info["name"][:250], url=url, color=0xE67E22, description=desc,
                                          footer=f"{src['flag']} {src['label'] if 'label' in src else src['game']}")],
                     })
                     continue
