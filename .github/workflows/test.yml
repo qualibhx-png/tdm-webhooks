@@ -1,0 +1,12 @@
+name: Test (one message to staff-alerts)
+on:
+  workflow_dispatch: {}
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send one test message
+        env:
+          URL: ${{ secrets.WEBHOOK_EVENT_WATCH }}
+        run: |
+          curl -sf -H "Content-Type: application/json" -d '{"username":"TDM Test","content":"✅ Webhooks connected. GitHub can post to Discord. (one-time test)"}' "$URL" && echo "sent"
