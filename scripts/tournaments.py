@@ -118,7 +118,8 @@ def chinoize_events(game_cfg, src, seen):
             counts[r["leader"]] = counts.get(r["leader"], 0) + 1
         summary = ", ".join(f"{k} x{v}" for k, v in sorted(counts.items(), key=lambda kv: -kv[1]))
         out.append(dict(id=eid, name=ev["name"], online=True, url=ev["url"], players=ev["players"], date=ev["date"],
-                        rows=rows, source=src["label"], extra=f"📊 Top 8 leaders: {summary}"))
+                        rows=rows, source=src["label"], extra=f"📊 Top 8 leaders: {summary}",
+                        decks=[(ORD.get(r["place"], f"{r['place']}th"), r["player"], r["leader"], r["decklist"]) for r in top]))
     return out
 
 
@@ -155,7 +156,19 @@ def post_event(game_cfg, ev, test):
                "embeds": [embed(f"{t} | {ev['name']}", url=ev["url"], color=game_cfg.get("color", 0x5865F2),
                                 description="\n".join(lines) + (f"\n\n{ev['extra']}" if ev.get('extra') else "") + f"\n\n[Full standings & decklists]({ev['url']})",
                                 footer=" · ".join(meta))]}
-    post_webhook(game_cfg["webhook"], with_ping(payload, "tournament_results"), thread_name=title, dry_run=test)
+    files = None
+    if ev.get("decks") and not test:
+        from deck_shot import decklist_png
+        files = []
+        for i, (place, player, leader, url) in enumerate(ev["decks"], 1):
+            img = decklist_png(url)
+            if not img:
+                continue
+            name = f"deck{i}.jpg"
+            files.append((name, img))
+            payload["embeds"].append({"title": f"{place} · {player} · {leader}", "url": url,
+                                      "color": game_cfg.get("color", 0x5865F2), "image": {"url": f"attachment://{name}"}})
+    post_webhook(game_cfg["webhook"], with_ping(payload, "tournament_results"), thread_name=title, dry_run=test, files=files)
 
 
 def main():
@@ -168,6 +181,29 @@ def main():
     state = load_json(STATE, {"seen": []})
     seen = set(state["seen"])
     first_run = not seen
+    if "--seed-chinoize" in sys.argv:
+        # Go-live helper: remember every result already out, then post ONLY the newest
+        # finished ChinoizeCup (one message), so later runs only post genuinely new events.
+        posted = False
+        for game in cfg["tournament_games"]:
+            if not game.get("enabled", True):
+                continue
+            events = limitless_events(game, seen, test)
+            for src in game.get("result_pages", []):
+                if src.get("enabled", True):
+                    events += page_events(game, src, seen)
+            for ev in events:
+                if not posted and "chinoize" in ev.get("source", "").lower():
+                    log(f"posting newest ChinoizeCup: {ev['name']} ({ev.get('date')})")
+                    post_event(game, ev, test)
+                    posted = True
+                seen.add(ev["id"])
+        if not posted:
+            log("no finished ChinoizeCup found to post")
+        if not test:
+            state["seen"] = list(seen)[-3000:]
+            save_json(STATE, state)
+        return
     for game in cfg["tournament_games"]:
         if not game.get("enabled", True):
             continue

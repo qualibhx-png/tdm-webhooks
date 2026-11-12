@@ -81,21 +81,36 @@ def with_ping(payload, role_key, cfg=None):
     return p
 
 
-def post_webhook(env_name, payload, thread_name=None, dry_run=False):
-    """POST to a Discord webhook. thread_name is required for forum channels."""
+def _multipart(body, files):
+    """payload_json + files[n] multipart body for Discord webhooks."""
+    b = "tdmboundary7c1f"
+    parts = [f'--{b}\r\nContent-Disposition: form-data; name="payload_json"\r\nContent-Type: application/json\r\n\r\n'.encode()
+             + json.dumps(body).encode() + b"\r\n"]
+    for i, (name, blob) in enumerate(files):
+        parts.append(f'--{b}\r\nContent-Disposition: form-data; name="files[{i}]"; filename="{name}"\r\nContent-Type: {"image/jpeg" if name.endswith(".jpg") else "image/png"}\r\n\r\n'.encode()
+                     + blob + b"\r\n")
+    return b"".join(parts) + f"--{b}--\r\n".encode(), f"multipart/form-data; boundary={b}"
+
+
+def post_webhook(env_name, payload, thread_name=None, dry_run=False, files=None):
+    """POST to a Discord webhook. thread_name is required for forum channels.
+    files: optional [(filename, bytes)], referenced in embeds as attachment://filename."""
     url = webhook_url(env_name)
     if dry_run or not url:
         tag = "DRY-RUN" if dry_run else f"SKIP (secret {env_name} not set)"
-        print(f"[{tag}] -> {env_name} thread={thread_name!r}\n{json.dumps(payload, indent=1)[:1500]}")
+        print(f"[{tag}] -> {env_name} thread={thread_name!r} files={[f[0] for f in files or []]}\n{json.dumps(payload, indent=1)[:1500]}")
         return
     body = dict(payload)
     body.setdefault("allowed_mentions", {"parse": []})
     if thread_name:
         body["thread_name"] = thread_name[:100]
-    data = json.dumps(body).encode()
+    if files:
+        data, ctype = _multipart(body, files)
+    else:
+        data, ctype = json.dumps(body).encode(), "application/json"
     for attempt in range(4):
         req = urllib.request.Request(url + "?wait=true", data=data, method="POST",
-                                     headers={"Content-Type": "application/json", "User-Agent": UA})
+                                     headers={"Content-Type": ctype, "User-Agent": UA})
         try:
             with urllib.request.urlopen(req, timeout=30):
                 time.sleep(1.2)  # stay well under webhook rate limits
