@@ -166,8 +166,8 @@ def post_event(game_cfg, ev, test):
                 continue
             name = f"deck{i}.jpg"
             files.append((name, img))
-            payload["embeds"].append({"title": f"{place} · {player} · {leader}", "url": url,
-                                      "color": game_cfg.get("color", 0x5865F2), "image": {"url": f"attachment://{name}"}})
+            # same url as the summary embed -> Discord shows all 4 decks as one 2x2 grid in one card
+            payload["embeds"].append({"url": ev["url"], "image": {"url": f"attachment://{name}"}})
     post_webhook(game_cfg["webhook"], with_ping(payload, "tournament_results"), thread_name=title, dry_run=test, files=files)
 
 
