@@ -191,7 +191,8 @@ def main():
             events = limitless_events(game, seen, test)
             for src in game.get("result_pages", []):
                 if src.get("enabled", True):
-                    events += page_events(game, src, seen)
+                    # re-read ChinoizeCup even if already logged, so the newest one can still be posted
+                    events += page_events(game, src, set() if "chinoize" in src.get("url", "") else seen)
             for ev in events:
                 if not posted and "chinoize" in ev.get("source", "").lower():
                     log(f"posting newest ChinoizeCup: {ev['name']} ({ev.get('date')})")
