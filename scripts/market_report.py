@@ -11,7 +11,7 @@ import os
 import sys
 import urllib.parse
 
-from common import webhook_url, embed, http_json, load_config, load_json, log, now_la, post_webhook, save_json, with_ping
+from common import webhook_url, embed, tcgplayer_image, http_json, load_config, load_json, log, now_la, post_webhook, save_json, with_ping
 from comps import get_comps, remaining
 
 TCGCSV = "https://tcgcsv.com/tcgplayer"
@@ -254,6 +254,8 @@ def main():
         return
     day = now.strftime("%a %b %d, %Y")
     anomaly_lines, cross_gain, cross_lose = [], [], []
+    anomaly_key = None  # (abs pct, key) of the biggest anomaly, for the thumbnail
+    pic = lambda row: tcgplayer_image(row[3].split(":", 1)[0]) if row else None
     play_lines, coll_lines = [], []
     meta, lists = meta_set(cfg)
     for game in cfg["market_games"]:
@@ -270,8 +272,8 @@ def main():
             log(f"[{slug}] first snapshot saved; movers start tomorrow")
             continue
         pl, co = split_movers(cfg, game, today, yesterday, index, meta, lists)
-        play_lines += [(abs(r[0]), fmt_split(r, index, game["emoji"])) for r in pl]
-        coll_lines += [(abs(r[0]), fmt_split(r, index, game["emoji"])) for r in co]
+        play_lines += [(abs(r[0]), fmt_split(r, index, game["emoji"]), r[3]) for r in pl if game["slug"] == "onepiece"]
+        coll_lines += [(abs(r[0]), fmt_split(r, index, game["emoji"]), r[3]) for r in co]
         sg, sl, sa = movers(cfg, today, yesterday, index, sealed=False)
         bg, bl, ba = movers(cfg, today, yesterday, index, sealed=True)
         f = lambda rows: "\n".join(fmt(r, index) for r in rows) or "No qualifying moves"
@@ -280,31 +282,38 @@ def main():
             f"{game['emoji']} {game['name']} · Nightly Market Report · {day}", color=game.get("color", 0x2ECC71),
             fields=[("📈 Singles: Top Gainers", f(sg), False), ("📉 Singles: Top Losers", f(sl), False),
                     ("📦 Sealed: Top Gainers", f(bg), False), ("📦 Sealed: Top Losers", f(bl), False)],
+            thumb=pic((sg or bg or sl or bl or [None])[0]),
             footer=f"TCGplayer market price (via tcgcsv.com) · day-over-day · singles ≥{money(cfg['market']['min_price'])} · sealed ≥{money(cfg['market']['sealed_min_price'])}")]}, dry_run=test)
         for r in sg[:5] + bg[:5]:
-            cross_gain.append((r[0], f"{game['emoji']} " + fmt(r, index)))
+            cross_gain.append((r[0], f"{game['emoji']} " + fmt(r, index), r[3]))
         for r in sl[:5] + bl[:5]:
-            cross_lose.append((r[0], f"{game['emoji']} " + fmt(r, index)))
+            cross_lose.append((r[0], f"{game['emoji']} " + fmt(r, index), r[3]))
         anomaly_lines += [f"{game['emoji']} {fmt(r, index)}" for r in sa[:10]] + [f"{game['emoji']} 📦 {fmt(r, index)}" for r in ba[:5]]
+        top_anom = max(sa[:10] + ba[:5], key=lambda r: abs(r[0]), default=None)
+        if top_anom and (not anomaly_key or abs(top_anom[0]) > anomaly_key[0]):
+            anomaly_key = (abs(top_anom[0]), top_anom[3])
 
     if LEADER_COLORS and not test:
         save_json("op_leader_colors.json", LEADER_COLORS)
     if play_lines:
         play_lines.sort(key=lambda x: -x[0])
-        post_webhook(cfg["webhooks"].get("playable_movers", "WEBHOOK_PLAYABLE_MOVERS"), {"username": "TDM Playable Movers", "embeds": [embed(
-            f"⚔️ Playable Movers · {day}", color=0xE67E22, description="\n".join(t for _, t in play_lines[:15]),
-            footer="Cards seen in recent top cuts (ChinoizeCup Stats) · cheapest NM printing · Not financial advice.")]}, dry_run=test)
+        post_webhook(cfg["webhooks"].get("playable_movers", "WEBHOOK_PLAYABLE_MOVERS"), {"username": "TDM One Piece Playables", "embeds": [embed(
+            f"🏴‍☠️ One Piece Playable Movers · {day}", color=0xE67E22, description="\n".join(t for _, t, _k in play_lines[:15]),
+            thumb=tcgplayer_image(play_lines[0][2].split(":", 1)[0]),
+            footer="One Piece only · cards seen in recent top cuts (ChinoizeCup Stats) · cheapest NM printing · Not financial advice.")]}, dry_run=test)
     if coll_lines:
         coll_lines.sort(key=lambda x: -x[0])
         post_webhook(cfg["webhooks"].get("collector_movers", "WEBHOOK_COLLECTOR_MOVERS"), {"username": "TDM Collector Movers", "embeds": [embed(
-            f"💎 Collector Movers · {day}", color=0x9B59B6, description="\n".join(t for _, t in coll_lines[:15]),
+            f"💎 Collector Movers · {day}", color=0x9B59B6, description="\n".join(t for _, t, _k in coll_lines[:15]),
+            thumb=tcgplayer_image(coll_lines[0][2].split(":", 1)[0]),
             footer="Alt arts, manga, SP, special illustrations and sealed · Not financial advice. Do your own research.")]}, dry_run=test)
     if cross_gain or cross_lose:
         cross_gain.sort(key=lambda x: -x[0]); cross_lose.sort(key=lambda x: x[0])
         post_webhook(cfg["webhooks"]["market_movers"], with_ping({"username": "TDM Market Movers", "content": "Tonight's market report is up.", "embeds": [embed(
             f"🌐 All Games · Biggest Movers · {day}", color=0x2ECC71,
-            fields=[("📈 Top Gainers", "\n".join(t for _, t in cross_gain[:8]), False),
-                    ("📉 Top Losers", "\n".join(t for _, t in cross_lose[:8]), False)],
+            fields=[("📈 Top Gainers", "\n".join(t for _, t, _k in cross_gain[:8]), False),
+                    ("📉 Top Losers", "\n".join(t for _, t, _k in cross_lose[:8]), False)],
+            thumb=tcgplayer_image((cross_gain or cross_lose)[0][2].split(":", 1)[0]),
             footer="Pokémon · One Piece · Riftbound · singles + sealed · full reports in each game's market channel")]}, "market_alerts", cfg), dry_run=test)
 
     graded = graded_report(cfg) or graded_comps_report(cfg)
@@ -319,6 +328,7 @@ def main():
       post_webhook(cfg["webhooks"]["sales_anomalies"], {"username": "TDM Sales Anomalies", "embeds": [embed(
         f"🚨 Sales Anomalies · {day}", color=0xE74C3C,
         description="\n".join(anomaly_lines[:30]),
+        thumb=tcgplayer_image(anomaly_key[1].split(":", 1)[0]) if anomaly_key else None,
         footer=f"Raw: ≥{cfg['market']['anomaly_pct']}% move on cards ≥{money(cfg['market']['anomaly_min_price'])} · Graded: price/volume spikes")]}, dry_run=test)
     if not test:
         state["last"] = now.date().isoformat()

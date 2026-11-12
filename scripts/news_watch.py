@@ -12,7 +12,7 @@ Items whose title matches reveal keywords go to #set-reveals, everything else to
 import re
 import sys
 
-from common import PREVIEW, embed, extract_links, http_get, load_config, load_json, log, post_webhook, save_json, with_ping
+from common import PREVIEW, embed, og_image, extract_links, http_get, load_config, load_json, log, post_webhook, save_json, with_ping
 
 STATE = "news_state.json"
 
@@ -93,7 +93,7 @@ def seed_latest(cfg, sid_post):
             log(f"[{sid}] posting newest {kind}: {title}")
             post_webhook(hook, {
                 "username": f"{src['game']} Official",
-                "embeds": [embed(title, url=url, color=src.get("color", 0x5865F2),
+                "embeds": [embed(title, url=url, color=src.get("color", 0x5865F2), thumb=og_image(url),
                                  description=("🃏 **Confirmed reveal**" if kind == "reveal" else "📰 Official news"),
                                  footer=f"{src['flag']} {src['game']} · Official {src['publisher']} ({src['region']})")],
             })
@@ -157,7 +157,7 @@ def main():
                                                  f"New on the {src['game']} events page. Check it, then repost in #📅-event-signups if registration is open."] if x)
                     post_webhook(src.get("webhook", "WEBHOOK_EVENT_WATCH"), {
                         "username": "TDM Event Watch",
-                        "embeds": [embed(info["name"][:250], url=url, color=0xE67E22, description=desc,
+                        "embeds": [embed(info["name"][:250], url=url, color=0xE67E22, description=desc, thumb=og_image(url),
                                          footer=f"{src['flag']} {src['label'] if 'label' in src else src['game']}")],
                     })
                     continue
@@ -166,7 +166,7 @@ def main():
                 label = f"{src['flag']} {src['game']} · Official {src['publisher']} ({src['region']})"
                 payload = {
                     "username": f"{src['game']} Official",
-                    "embeds": [embed(title, url=url, color=src.get("color", 0x5865F2),
+                    "embeds": [embed(title, url=url, color=src.get("color", 0x5865F2), thumb=og_image(url),
                                      description=("🃏 **Confirmed reveal**" if kind == "reveal" else "📰 Official news"),
                                      footer=label)],
                 }

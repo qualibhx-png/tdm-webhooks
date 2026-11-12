@@ -190,8 +190,11 @@ def upsert_webhook(env_name, payload, key, dry_run=False):
     return mid
 
 
-def embed(title, url=None, description=None, color=0x5865F2, fields=None, footer=None):
+def embed(title, url=None, description=None, color=0x5865F2, fields=None, footer=None, thumb=None):
+    """thumb: URL of a real image (card art, product photo, page og:image). Never generated."""
     e = {"title": title[:256], "color": color}
+    if thumb:
+        e["thumbnail"] = {"url": thumb}
     if url:
         e["url"] = url
     if description:
@@ -201,6 +204,32 @@ def embed(title, url=None, description=None, color=0x5865F2, fields=None, footer
     e["footer"] = {"text": (footer or "Top Deck Merchant")[:2048]}
     e["timestamp"] = datetime.utcnow().isoformat() + "Z"
     return e
+
+
+def og_image(url):
+    """The page's own preview image (og:image), or None."""
+    try:
+        page = http_get(url, retries=0, timeout=15)
+    except Exception:
+        return None
+    m = re.search(r'<meta[^>]+property=["\']og:image["\'][^>]+content=["\']([^"\']+)', page, re.I) or \
+        re.search(r'<meta[^>]+content=["\']([^"\']+)["\'][^>]+property=["\']og:image', page, re.I)
+    if not m:
+        return None
+    img = m.group(1).strip()
+    return urllib.parse.urljoin(url, img) if img else None
+
+
+def tcgplayer_image(product_id):
+    return f"https://tcgplayer-cdn.tcgplayer.com/product/{product_id}_200w.jpg"
+
+
+def op_card_image(code):
+    """Official card art for a One Piece card code (e.g. OP17-039), served by Limitless' CDN."""
+    code = (code or "").strip()
+    if not re.fullmatch(r"[A-Z]{1,4}\d{0,2}-\d{3}", code):
+        return None
+    return f"https://limitlesstcg.nyc3.cdn.digitaloceanspaces.com/one-piece/{code.split('-')[0]}/{code}_EN.webp"
 
 
 # ---------------------------------------------------------- html parse ---

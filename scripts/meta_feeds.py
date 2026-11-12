@@ -11,7 +11,7 @@ import re
 import sys
 
 from chinoize import color_emoji, list_tournaments, tier_list, tournament
-from common import embed, load_config, load_json, log, now_la, post_webhook, save_json
+from common import embed, op_card_image, load_config, load_json, log, now_la, post_webhook, save_json
 
 STATE = "meta_state.json"
 ORD = lambda n: {1: "🥇 1st", 2: "🥈 2nd", 3: "🥉 3rd"}.get(n, f"{n}th")
@@ -47,7 +47,8 @@ def rankings(cfg, test):
             + "\n\n💬 Talk it over in the leader channels.")
     post_webhook(cfg["webhooks"].get("op_meta", "WEBHOOK_OP_META"), {"username": "TDM Leader Rankings", "embeds": [embed(
         f"📊 Weekly Leader Rankings · Week of {day}", url="https://chinoizecupstats.com/tier-list",
-        description=desc, color=0x9B59B6, footer="Source: ChinoizeCup Stats leader rankings")]}, dry_run=test)
+        description=desc, color=0x9B59B6, thumb=op_card_image(top[0]["code"]) if top else None,
+        footer="Source: ChinoizeCup Stats leader rankings")]}, dry_run=test)
     if not test:
         state["last_rankings"] = rows
         save_json(STATE, state)

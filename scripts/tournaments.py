@@ -1,239 +1,291 @@
-"""Post Top 4 (players + decks + decklist links) from big events into each game's
-#...-tournament-results forum, tagged ONLINE or OFFLINE with the event name.
+"""Tournament results -> each game's #...-tournament-results forum, one post per event:
+Top 4 (player, colors, leader/legend, decklist link) + a 2x2 grid of real decklist screenshots
++ the winning leader/legend card as the thumbnail. An event is posted ONLY when all four Top 4
+decklists can be captured; otherwise it is retried on later runs for a few days, then dropped.
 
-Sources:
-  1. Limitless TCG API (play.limitlesstcg.com) - structured standings, isOnline flag.
-  2. Results-page watchers (Limitless majors pages, ChinoizeCup stats, RiftDecks, ...):
-     new event pages are detected, Top 4 rows are parsed best-effort, link always included.
+Sources (config.tournament_games[].result_pages[].kind):
+  chinoize  - ChinoizeCup Stats (online, One Piece)
+  limitless - onepiece.limitlesstcg.com majors (offline + big online), min_players filter
+  riftdecks - riftdecks.com Riftbound results, min_players filter, rune colors
 
-  python scripts/tournaments.py --test       # show what would be posted, post nothing
-  python scripts/tournaments.py --list-games # print Limitless game IDs (needs API key)
+  python scripts/tournaments.py --test           # show what would be posted, post nothing
+  python scripts/tournaments.py --seed-chinoize  # go-live: post newest ChinoizeCup only
 """
 import re
 import sys
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
-from common import PREVIEW, embed, extract_links, http_get, http_json, load_config, load_json, log, post_webhook, save_json, strip_tags, with_ping
+from common import PREVIEW, embed, load_config, load_json, log, now_la, op_card_image, post_webhook, save_json, with_ping
 
 STATE = "tournament_state.json"
-LIMITLESS = "https://play.limitlesstcg.com/api"
 ORD = {1: "🥇 1st", 2: "🥈 2nd", 3: "🥉 3rd", 4: "4th"}
-
-
-def limitless_headers():
-    import os
-    key = os.environ.get("LIMITLESS_API_KEY", "").strip()
-    return {"X-Access-Key": key} if key else {}
+OP_COLOR = {"red": "🔴", "green": "🟢", "blue": "🔵", "purple": "🟣", "black": "⚫", "yellow": "🟡"}
+RUNE = {"fury": "🔴", "calm": "🟢", "mind": "🔵", "body": "🟠", "chaos": "🟣", "order": "🟡"}
+RETRY_DAYS = 4
 
 
 def tag(online):
     return "🌐 ONLINE" if online else "🏟️ OFFLINE"
 
 
-def guess_online(name, default):
-    if default in ("Online", "Offline"):
-        return default == "Online"
-    return bool(re.search(r"\bonline\b|\bTTS\b|\bsim\b|webcam|\bPTCGL\b|\bTCG\s*Live\b", name, re.I))
+def guess_online(name):
+    return bool(re.search(r"\bonline\b|\bTTS\b|\bsim\b|webcam|chinoize", name, re.I))
 
 
-# ------------------------------------------------------- Limitless API ---
-def limitless_events(game_cfg, seen, test):
-    out = []
-    lid = game_cfg.get("limitless_game")
-    if not lid:
-        return out
+def _date(text, fmt):
     try:
-        events = http_json(f"{LIMITLESS}/tournaments?game={lid}&limit=50", limitless_headers())
-    except Exception as e:
-        log(f"[limitless {lid}] {e}")
-        return out
-    cutoff = datetime.now(timezone.utc) - timedelta(days=4)
-    for ev in events:
-        eid = f"limitless:{ev['id']}"
-        if eid in seen or (ev.get("players") or 0) < game_cfg.get("min_players", 32):
-            continue
-        try:
-            when = datetime.fromisoformat(ev["date"].replace("Z", "+00:00"))
-        except Exception:
-            continue
-        if when > datetime.now(timezone.utc) or when < cutoff:
-            continue
-        try:
-            det = http_json(f"{LIMITLESS}/tournaments/{ev['id']}/details", limitless_headers())
-            standings = http_json(f"{LIMITLESS}/tournaments/{ev['id']}/standings", limitless_headers())
-        except Exception as e:
-            log(f"[limitless {ev['id']}] {e}")
-            continue
-        if not standings or not standings[0].get("placing"):
-            continue  # not finished yet
-        top = sorted([s for s in standings if s.get("placing")], key=lambda s: s["placing"])[:4]
-        base = f"https://play.limitlesstcg.com/tournament/{ev['id']}"
-        rows = []
-        for s in top:
-            deck = (s.get("deck") or {}).get("name") or "Unknown deck"
-            dl = f"{base}/player/{s.get('player')}/decklist" if s.get("decklist") is not None and s.get("player") else base + "/standings"
-            rows.append((ORD.get(s["placing"], f"{s['placing']}th"), f"**{s.get('name', '?')}**: [{deck}]({dl})"))
-        out.append(dict(id=eid, name=ev["name"], online=bool(det.get("isOnline", True)), url=base + "/standings",
-                        players=ev.get("players"), date=when.strftime("%b %d, %Y"), rows=rows, source="Limitless TCG"))
-    return out
+        return datetime.strptime((text or "").strip(), fmt)
+    except ValueError:
+        return None
 
 
-# --------------------------------------------------- results-page watch ---
-def parse_top4(html):
-    """Best-effort: find table rows / list items that start with a 1st-4th placing."""
-    rows = []
-    for chunk in re.findall(r"<tr[\s\S]*?</tr>|<li[\s\S]*?</li>", html, re.I):
-        text = strip_tags(chunk)
-        m = re.match(r"^(?:#\s*)?([1-4])(?:st|nd|rd|th)?\b[\s.:|-]+(.{3,140})", text)
-        if m:
-            place = int(m.group(1))
-            if place not in [r[0] for r in rows]:
-                rows.append((place, m.group(2).strip()))
-        if len(rows) == 4:
-            break
-    return [(ORD[p], t) for p, t in sorted(rows)]
+def op_colors(text):
+    return "".join(OP_COLOR.get(c.strip().lower(), "") for c in re.split(r"[/ ,]+", text or "")) or "🃏"
 
 
-def chinoize_events(game_cfg, src, seen):
-    """ChinoizeCup Stats: real standings with leader, color and decklist links."""
+# ------------------------------------------------------------ ChinoizeCup ---
+def chinoize_events(src, seen, ignore_seen=False):
     from chinoize import color_emoji, list_tournaments, tournament
     colors = load_json("op_leader_colors.json", {})
     out = []
     for t in list_tournaments(limit=src.get("max_new", 6)):
         eid = f"page:{t['url']}"
-        if eid in seen:
+        if eid in seen and not ignore_seen:
             continue
         try:
             ev = tournament(t["id"])
         except Exception as e:
             log(f"[chinoize] {t['id']}: {e}")
             continue
-        if not ev["standings"]:
+        if len(ev["standings"]) < 4:
             continue  # not finished yet
         top = ev["standings"][:4]
-        rows = [(ORD.get(r["place"], f"{r['place']}th"),
-                 f"**{r['player']}** — {color_emoji(r['code'], colors)} [{r['leader']}]({r['decklist']})") for r in top]
         counts = {}
         for r in ev["standings"][:8]:
             counts[r["leader"]] = counts.get(r["leader"], 0) + 1
         summary = ", ".join(f"{k} x{v}" for k, v in sorted(counts.items(), key=lambda kv: -kv[1]))
-        out.append(dict(id=eid, name=ev["name"], online=True, url=ev["url"], players=ev["players"], date=ev["date"],
-                        rows=rows, source=src["label"], extra=f"📊 Top 8 leaders: {summary}",
-                        decks=[(ORD.get(r["place"], f"{r['place']}th"), r["player"], r["leader"], r["decklist"]) for r in top]))
+        out.append(dict(
+            id=eid, name=ev["name"], online=True, url=ev["url"], players=ev["players"], date=ev["date"],
+            source=src["label"], extra=f"📊 Top 8 leaders: {summary}", thumb=op_card_image(top[0]["code"]),
+            rows=[(ORD[i + 1], f"**{r['player']}** · {color_emoji(r['code'], colors)} [{r['leader']}]({r['decklist']})")
+                  for i, r in enumerate(top)],
+            shots=[("chinoize", r["decklist"], None) for r in top], when=_date(ev["date"], "%B %d, %Y")))
     return out
 
 
-def page_events(game_cfg, src, seen):
-    if "chinoizecupstats" in src.get("url", ""):
-        return chinoize_events(game_cfg, src, seen)
+# ------------------------------------------------- Limitless OP majors ---
+LIM_LIST_JS = """[...document.querySelectorAll('table tr')].map(tr => {
+  const a = tr.querySelector('a[href^="/tournaments/"]'); if (!a) return null;
+  const td = [...tr.children].map(x => x.innerText.trim());
+  return {href: a.getAttribute('href'), date: td[0], name: td[2], players: parseInt(td[4]) || 0};
+}).filter(Boolean)"""
+
+LIM_EVENT_JS = """[...document.querySelectorAll('table tr')].slice(1, 9).map(tr => {
+  const td = [...tr.children];
+  const list = tr.querySelector('a[href^="/decks/list/"]');
+  const deck = (td[2] ? td[2].innerText : '').split('\\n').map(s => s.trim()).filter(Boolean);
+  return {place: parseInt(td[0] && td[0].innerText) || 0, player: td[1] ? td[1].innerText.trim() : '',
+          colors: deck[0] || '', leader: deck[1] || deck[0] || '', list: list ? list.getAttribute('href') : ''};
+})"""
+
+
+def limitless_events(br, src, seen, ignore_seen=False):
+    base = "https://onepiece.limitlesstcg.com"
+    rows = br.read(src["url"], LIM_LIST_JS) or []
     out = []
-    try:
-        html = http_get(src["url"])
-    except Exception as e:
-        log(f"[{src['id']}] {e}")
-        return out
-    for url, title in extract_links(html, src["url"], src["link_regex"])[: src.get("max_new", 6)]:
-        eid = f"page:{url}"
-        if eid in seen or not title:
+    for r in rows[: src.get("max_new", 12)]:
+        eid = f"lim:{r['href']}"
+        if (eid in seen and not ignore_seen) or r["players"] < src.get("min_players", 128):
             continue
-        rows = []
         try:
-            rows = parse_top4(http_get(url))
-        except Exception as e:
-            log(f"[{src['id']}] event page {url}: {e}")
-        out.append(dict(id=eid, name=title, online=guess_online(title, src.get("event_type", "auto")), url=url,
-                        players=None, date=None, rows=rows, source=src["label"]))
+            when = datetime.strptime(r["date"], "%d %b %y")
+        except ValueError:
+            when = None
+        top = [x for x in (br.read(base + r["href"], LIM_EVENT_JS) or []) if x["place"]]
+        top4 = top[:4]
+        lists = [x["list"] for x in top4]
+        if len(top4) < 4 or not all(lists) or len(set(lists)) < 4:
+            log(f"[limitless] {r['name']}: Top 4 decklists not all published yet")
+            out.append(dict(id=eid, incomplete=True, when=when, name=r["name"]))
+            continue
+        counts = {}
+        for x in top[:8]:
+            counts[x["leader"]] = counts.get(x["leader"], 0) + 1
+        summary = ", ".join(f"{k} x{v}" for k, v in sorted(counts.items(), key=lambda kv: -kv[1]))
+        out.append(dict(
+            id=eid, name=r["name"], online=guess_online(r["name"]), url=base + r["href"], players=r["players"],
+            date=when.strftime("%b %d, %Y") if when else r["date"], source=src["label"],
+            extra=f"📊 Top 8 leaders: {summary}", thumb=None, when=when,
+            rows=[(ORD[i + 1], f"**{x['player']}** · {op_colors(x['colors'])} [{x['leader']}]({base + x['list']})")
+                  for i, x in enumerate(top4)],
+            shots=[("limitless", base + x["list"], x["player"]) for x in top4],
+            thumb_js=("limitless", base + top4[0]["list"])))
     return out
 
 
-# ------------------------------------------------------------------ run ---
-def post_event(game_cfg, ev, test):
+# --------------------------------------------------------- riftdecks.com ---
+RD_LIST_JS = """[...document.querySelectorAll('table tr')].map(tr => {
+  const a = [...tr.querySelectorAll('a')].find(a => /\\/riftbound-tournaments\\/.+-\\d+$/.test(a.pathname)); if (!a) return null;
+  const td = [...tr.children].map(x => x.innerText.trim());
+  return {href: a.pathname, date: td[0], name: (td[2] || '').replace(/\\s*New$/, ''), players: parseInt(td[3]) || 0};
+}).filter(Boolean)"""
+
+RD_EVENT_JS = """[...document.querySelectorAll('table tr')].map(tr => {
+  const a = tr.querySelector('a[href*="/riftbound-metagame/deck-"]'); if (!a) return null;
+  const td = [...tr.children];
+  const who = (td[2] ? td[2].innerText : a.innerText).split('\\n').map(s => s.trim()).filter(Boolean);
+  return {place: td[0] ? td[0].innerText.trim() : '', deck: who[0] || '', player: (who[1] || '').replace(/^by\\s+/i, ''),
+          href: a.pathname, runes: [...tr.querySelectorAll('img')].map(i => (i.alt || '').toLowerCase())
+            .filter(x => ['fury','calm','mind','body','chaos','order'].includes(x))};
+}).filter(Boolean)"""
+
+RD_DECK_JS = """(() => {
+  const lg = document.querySelector('a[href^="/legends/constructed/"]');
+  const m = document.documentElement.innerHTML.match(/\\/decks\\/visual\\/([0-9a-f-]{36})\\//);
+  const img = [...document.images].map(i => i.src).find(s => s.includes('/img/cards/riftbound/'));
+  return {legend: lg ? lg.textContent.trim() : '', visual: m ? m[1] : '', img: img || ''};
+})()"""
+
+PLACE_OK = re.compile(r"^(1st|2nd|3rd|4th|top\s*4|3rd\s*-\s*4th)$", re.I)
+
+
+def riftdecks_events(br, src, seen, ignore_seen=False):
+    base = "https://riftdecks.com"
+    rows = br.read(src["url"], RD_LIST_JS) or []
+    out = []
+    for r in rows[: src.get("max_new", 40)]:
+        eid = f"rd:{r['href']}"
+        if (eid in seen and not ignore_seen) or r["players"] < src.get("min_players", 64):
+            continue
+        try:
+            when = datetime.strptime(r["date"], "%Y-%m-%d")
+        except ValueError:
+            when = None
+        top = (br.read(base + r["href"], RD_EVENT_JS) or [])[:4]
+        if len(top) < 4 or not all(PLACE_OK.match(x["place"]) for x in top):
+            log(f"[riftdecks] {r['name']}: Top 4 decklists not all published yet")
+            out.append(dict(id=eid, incomplete=True, when=when, name=r["name"]))
+            continue
+        decks = []
+        for x in top:
+            d = br.read(base + x["href"], RD_DECK_JS) or {}
+            if not d.get("visual"):
+                break
+            decks.append({**x, **d})
+        if len(decks) < 4:
+            log(f"[riftdecks] {r['name']}: a Top 4 visual decklist is missing")
+            out.append(dict(id=eid, incomplete=True, when=when, name=r["name"]))
+            continue
+        out.append(dict(
+            id=eid, name=r["name"], online=guess_online(r["name"]), url=base + r["href"], players=r["players"],
+            date=when.strftime("%b %d, %Y") if when else r["date"], source=src["label"], extra="",
+            thumb=decks[0]["img"] or None, when=when,
+            rows=[(ORD[i + 1], f"**{d['player'] or d['deck']}** · {''.join(RUNE[x] for x in d['runes']) or '🌀'} "
+                               f"[{d['legend'] or d['deck']}]({base + d['href']})") for i, d in enumerate(decks)],
+            shots=[("riftdecks", f"{base}/decks/visual/{d['visual']}/horizontal/type", None) for d in decks]))
+    return out
+
+
+# ------------------------------------------------------------------ post ---
+LIM_THUMB_JS = "(() => { const i = document.querySelector('img.card-picture'); return i ? i.src : ''; })()"
+
+
+def post_event(br, game_cfg, ev, test):
+    """Returns True when posted (or would be, in --test)."""
+    images = []
+    for kind, url, who in ev["shots"]:
+        img = None if test else br.shot(kind, url, expect_player=who)
+        if not test and not img:
+            log(f"[{ev['name']}] decklist screenshot failed ({url}); holding the post")
+            return False
+        images.append(img)
+    if not ev.get("thumb") and ev.get("thumb_js") and not test:
+        ev["thumb"] = br.read(ev["thumb_js"][1], LIM_THUMB_JS) or None
     t = tag(ev["online"])
     title = f"[{'Online' if ev['online'] else 'Offline'}] {ev['name']} · Top 4"
-    lines = [f"{p}: {txt}" for p, txt in ev["rows"]] or ["Top 4 couldn't be read automatically. Open the full results below."]
+    lines = [f"{p}: {txt}" for p, txt in ev["rows"]]
     meta = [x for x in [ev.get("date"), f"{ev['players']} players" if ev.get("players") else None, f"Source: {ev['source']}"] if x]
     payload = {"username": f"{game_cfg['name']} Results",
                "embeds": [embed(f"{t} | {ev['name']}", url=ev["url"], color=game_cfg.get("color", 0x5865F2),
-                                description="\n".join(lines) + (f"\n\n{ev['extra']}" if ev.get('extra') else "") + f"\n\n[Full standings & decklists]({ev['url']})",
-                                footer=" · ".join(meta))]}
-    files = None
-    if ev.get("decks") and not test:
-        from deck_shot import decklist_png
-        files = []
-        for i, (place, player, leader, url) in enumerate(ev["decks"], 1):
-            img = decklist_png(url)
-            if not img:
-                continue
-            name = f"deck{i}.jpg"
-            files.append((name, img))
+                                description="\n".join(lines) + (f"\n\n{ev['extra']}" if ev.get("extra") else "")
+                                + f"\n\n[Full standings & decklists]({ev['url']})",
+                                footer=" · ".join(meta), thumb=ev.get("thumb"))]}
+    files = []
+    for i, img in enumerate(images, 1):
+        if img:
+            files.append((f"deck{i}.jpg", img))
             # same url as the summary embed -> Discord shows all 4 decks as one 2x2 grid in one card
-            payload["embeds"].append({"url": ev["url"], "image": {"url": f"attachment://{name}"}})
-    post_webhook(game_cfg["webhook"], with_ping(payload, "tournament_results"), thread_name=title, dry_run=test, files=files)
+            payload["embeds"].append({"url": ev["url"], "image": {"url": f"attachment://deck{i}.jpg"}})
+    post_webhook(game_cfg["webhook"], with_ping(payload, "tournament_results"), thread_name=title,
+                 dry_run=test, files=files or None)
+    return True
+
+
+def gather(br, game, src, seen, ignore_seen=False):
+    kind = src.get("kind")
+    if kind == "chinoize":
+        return chinoize_events(src, seen, ignore_seen)
+    if kind == "limitless":
+        return limitless_events(br, src, seen, ignore_seen)
+    if kind == "riftdecks":
+        return riftdecks_events(br, src, seen, ignore_seen)
+    return []
 
 
 def main():
+    from deck_shot import Browser
     cfg = load_config()
     test = "--test" in sys.argv
-    if "--list-games" in sys.argv:
-        for g in http_json(f"{LIMITLESS}/games", limitless_headers()):
-            print(g.get("id"), "-", g.get("name"))
-        return
     state = load_json(STATE, {"seen": []})
     seen = set(state["seen"])
-    first_run = not seen
-    if PREVIEW:  # one sample per live results channel: newest event (ChinoizeCup first for One Piece)
-        for game in cfg["tournament_games"]:
-            if not game.get("enabled", True):
-                continue
-            events = limitless_events(game, set(), test)
+    seeded = set(state.get("seeded", []))
+    if "seeded" not in state and any(x.startswith("page:https://chinoizecupstats") for x in seen):
+        seeded.add("chinoizecup")  # ChinoizeCup was already live before sources were tracked
+    games = [g for g in cfg["tournament_games"] if g.get("enabled", True)]
+    with Browser() as br:
+        if PREVIEW:  # one sample per live results channel, ignoring what's been posted
+            for game in games:
+                for src in game.get("result_pages", []):
+                    evs = [e for e in gather(br, game, src, seen, ignore_seen=True) if not e.get("incomplete")]
+                    if any(post_event(br, game, e, test) for e in evs[:3]):
+                        break
+                else:
+                    log(f"[preview] {game['name']}: no event with all Top 4 decklists right now")
+            return
+        if "--seed-chinoize" in sys.argv:
+            for game in games:
+                for src in game.get("result_pages", []):
+                    if src.get("kind") == "chinoize":
+                        evs = gather(br, game, src, seen, ignore_seen=True)
+                        if evs and post_event(br, game, evs[0], test):
+                            log(f"posted newest ChinoizeCup: {evs[0]['name']}")
+                        seen.update(e["id"] for e in evs)
+            if not test:
+                state["seen"] = list(seen)[-3000:]
+                save_json(STATE, state)
+            return
+        cutoff = now_la().replace(tzinfo=None) - timedelta(days=RETRY_DAYS)
+        for game in games:
             for src in game.get("result_pages", []):
-                if src.get("enabled", True):
-                    events = page_events(game, src, set()) + events
-            pick = next((e for e in events if "chinoize" in e.get("source", "").lower()), events[0] if events else None)
-            if pick:
-                post_event(game, pick, test)
-            else:
-                log(f"[preview] {game['name']}: no events found")
-        return
-    if "--seed-chinoize" in sys.argv:
-        # Go-live helper: remember every result already out, then post ONLY the newest
-        # finished ChinoizeCup (one message), so later runs only post genuinely new events.
-        posted = False
-        for game in cfg["tournament_games"]:
-            if not game.get("enabled", True):
-                continue
-            events = limitless_events(game, seen, test)
-            for src in game.get("result_pages", []):
-                if src.get("enabled", True):
-                    # re-read ChinoizeCup even if already logged, so the newest one can still be posted
-                    events += page_events(game, src, set() if "chinoize" in src.get("url", "") else seen)
-            for ev in events:
-                if not posted and "chinoize" in ev.get("source", "").lower():
-                    log(f"posting newest ChinoizeCup: {ev['name']} ({ev.get('date')})")
-                    post_event(game, ev, test)
-                    posted = True
-                seen.add(ev["id"])
-        if not posted:
-            log("no finished ChinoizeCup found to post")
-        if not test:
-            state["seen"] = list(seen)[-3000:]
-            save_json(STATE, state)
-        return
-    for game in cfg["tournament_games"]:
-        if not game.get("enabled", True):
-            continue
-        events = limitless_events(game, seen, test)
-        for src in game.get("result_pages", []):
-            if src.get("enabled", True):
-                events += page_events(game, src, seen)
-        for ev in events:
-            if first_run and not test:
-                seen.add(ev["id"])  # don't flood the forum on the very first run
-                continue
-            post_event(game, ev, test)
-            seen.add(ev["id"])
+                if not src.get("enabled", True):
+                    continue
+                evs = gather(br, game, src, seen)
+                if src["id"] not in seeded:  # new source: remember what's already out, post nothing
+                    seen.update(e["id"] for e in evs)
+                    seeded.add(src["id"])
+                    log(f"[{src['id']}] first run: remembered {len(evs)} existing events")
+                    continue
+                for ev in evs:
+                    stale = ev.get("when") and ev["when"] < cutoff
+                    if ev.get("incomplete"):
+                        if stale:
+                            seen.add(ev["id"])  # lists never came; stop checking
+                        continue
+                    if post_event(br, game, ev, test) or stale:
+                        seen.add(ev["id"])
     if not test:
         state["seen"] = list(seen)[-3000:]
+        state["seeded"] = sorted(seeded)
         save_json(STATE, state)
 
 

@@ -1,12 +1,13 @@
-"""#buy-sell price checks. Members post a line in this exact format (photo optional):
+"""#buy-sell price checks: raw (ungraded) TCGplayer market prices only, free data (tcgcsv.com).
 
-    PC: <card name> | <card number> | <grade>
-    e.g.  PC: Rocks.D.Xebec Alternate Art | OP17-039 | PSA 10
-          PC: Charizard ex | 199/165 | Raw
+Members post one line (photo optional), any of:
+    PC: Rocks.D.Xebec | OP17-039
+    PC: Charizard ex 199/165
+    PC: OP17-039
+Anything after a second | (like a grade) is ignored.
 
-The job replies (through the #buy-sell webhook) with TCGplayer raw market, PriceCharting graded
-value for that exact grade, and one-click sold-comp links.
-
+The job replies through the #buy-sell webhook with the matching printings' raw market prices,
+the TCGplayer link, the card photo as thumbnail, and a one-click eBay sold-listings link.
 Reading messages needs a read-only bot token (webhooks can only send). See README.
 """
 import os
@@ -14,16 +15,12 @@ import re
 import sys
 import urllib.parse
 
-from common import embed, http_json, load_config, load_json, log, post_webhook, save_json
-from comps import format_last3, get_comps
+from common import embed, http_json, load_config, load_json, log, post_webhook, save_json, tcgplayer_image
 
 API = "https://discord.com/api/v10"
-LINE = re.compile(r"^\s*PC\s*:\s*(?P<name>[^|\n]+?)\s*\|\s*(?P<num>[^|\n]+?)\s*\|\s*(?P<grade>[^|\n]+?)\s*$", re.I | re.M)
-GRADE_FIELD = [  # regex on grade text -> PriceCharting field
-    (r"psa\s*10", "manual-only-price"), (r"bgs\s*10|beckett\s*10", "bgs-10-price"),
-    (r"9\.5", "box-only-price"), (r"cgc\s*10", "condition-17-price"), (r"sgc\s*10", "condition-18-price"),
-    (r"\b9\b", "graded-price"), (r"\b8(\.5)?\b", "new-price"), (r"raw|ungraded|nm|near mint", "loose-price"),
-]
+NUM = re.compile(r"\b([A-Z]{1,4}\d{0,2}-\d{3}|\d{1,3}\s*/\s*\d{1,3}|[A-Z]{3}\s?-?\s?\d{1,3})\b", re.I)
+GRADE = re.compile(r"(PSA|BGS|CGC|SGC|TAG|ACE|BECKETT)\b|raw|ungraded|near ?mint|nm\b", re.I)
+LINE = re.compile(r"^\s*PC\s*:\s*(?P<q>[^\n]+?)\s*$", re.I | re.M)
 
 
 def norm(s):
@@ -37,66 +34,66 @@ def game_for(num, cfg):
     return None
 
 
-def find_raw(name, num, game):
-    index = load_json(f"index_{game['slug']}.json", {})
-    snap = load_json(f"snap_{game['slug']}.json", {})
+def parse(q):
+    """'Name | number | anything' -> (name, number)."""
+    parts = [x.strip() for x in q.split("|")]
+    name, num = parts[0], (parts[1] if len(parts) > 1 else "")
+    if num and (GRADE.match(num) or not NUM.fullmatch(num)):
+        num = ""  # second part was a grade/condition, not a card number
+    if not num:  # number typed inline: 'Charizard ex 199/165' or just 'OP17-039'
+        m = next((x for x in NUM.finditer(name) if not GRADE.match(x.group(1))), None)
+        if m:
+            num, name = m.group(1), (name[:m.start()] + name[m.end():]).strip(" -")
+    return name, num.strip()
+
+
+def game_for(num, cfg):
+    for g in cfg["market_games"]:
+        if g.get("enabled", True) and re.match(g.get("number_regex", "$^"), num.strip(), re.I):
+            return g
+    return None
+
+
+def search(name, num, cfg):
+    """[(score, pid, pname, number, setname, url, {printing: price})] best first."""
+    games = [game_for(num, cfg)] if num and game_for(num, cfg) else [g for g in cfg["market_games"] if g.get("enabled", True)]
     words = norm(name).split()
     hits = []
-    for pid, (pname, pnum, url, setname, *_rest) in index.items():
-        if norm(pnum) != norm(num):
-            continue
-        score = sum(w in norm(pname) for w in words)
-        prices = {k.split(":", 1)[1] or "Normal": v for k, v in snap.items() if k.startswith(pid + ":")}
-        hits.append((score, pname, setname, url, prices))
-    hits.sort(key=lambda h: -h[0])
-    return hits[:3]
+    for game in games:
+        index = load_json(f"index_{game['slug']}.json", {})
+        snap = load_json(f"snap_{game['slug']}.json", {})
+        for pid, (pname, pnum, url, setname, *_rest) in index.items():
+            if num and norm(pnum) != norm(num):
+                continue
+            n = norm(pname)
+            score = sum(w in n for w in words)
+            if not num and (not words or score < len(words)):
+                continue  # name-only search: every word must match
+            prices = {k.split(":", 1)[1] or "Normal": v for k, v in snap.items() if k.startswith(pid + ":")}
+            hits.append((score, pid, pname, pnum, setname, url, prices))
+    hits.sort(key=lambda h: (-h[0], -max(h[6].values(), default=0)))
+    return hits[:4]
 
 
-def graded_value(name, num, grade):
-    token = os.environ.get("PRICECHARTING_TOKEN", "").strip()
-    field = next((f for rx, f in GRADE_FIELD if re.search(rx, grade, re.I)), None)
-    if not token or not field:
-        return None, field
-    try:
-        res = http_json(f"https://www.pricecharting.com/api/products?t={token}&q={urllib.parse.quote(name + ' ' + num)}")
-        if not res.get("products"):
-            return None, field
-        d = http_json(f"https://www.pricecharting.com/api/product?t={token}&id={res['products'][0]['id']}")
-        val = d.get(field)
-        return ((val / 100) if val else None, f"{d.get('product-name')} · {d.get('console-name')}"), field
-    except Exception as e:
-        log(f"[pricecharting] {e}")
-        return None, field
-
-
-def reply(cfg, msg, m):
-    name, num, grade = m["name"].strip(), m["num"].strip(), m["grade"].strip()
-    q = f"{name} {num} {'' if re.search('raw|ungraded', grade, re.I) else grade}".strip()
-    game = game_for(num, cfg)
+def reply(cfg, msg, q):
+    name, num = parse(q)
+    hits = search(name, num, cfg)
+    label = " · ".join(x for x in [name, num] if x) or q
     fields = []
-    if game:
-        for score, pname, setname, url, prices in find_raw(name, num, game):
-            ptxt = " · ".join(f"{k}: **${v:,.2f}**" for k, v in prices.items()) or "no market price yet"
-            fields.append((f"Raw (TCGplayer market) · {pname}", f"[{setname}]({url})\n{ptxt}", False))
+    for _, pid, pname, pnum, setname, url, prices in hits:
+        ptxt = " · ".join(f"{k}: **${v:,.2f}**" for k, v in prices.items()) or "no market price yet"
+        fields.append((f"{pname} · {pnum}", f"[{setname}]({url})\n{ptxt}", False))
     if not fields:
-        fields.append(("Raw (TCGplayer market)", "No exact match for that card number in the price index.", False))
-    last3 = format_last3(get_comps(name, num, grade))
-    if last3:
-        fields.insert(0, (f"🧾 Last 3 eBay sales · {grade}", last3, False))
-    gv, field = graded_value(name, num, grade)  # optional PriceCharting (paid token)
-    if gv and gv[0]:
-        fields.append((f"{grade} (PriceCharting)", f"**${gv[0]:,.2f}** · {gv[1]}", False))
-    elif not last3 and not re.search("raw|ungraded", grade, re.I):
-        fields.append((f"{grade}", "No graded sales data (COMPSAPI_KEY not set).", False))
-    enc = urllib.parse.quote_plus(q)
-    fields.append(("Sold comps", f"[eBay sold]({'https://www.ebay.com/sch/i.html?_nkw=' + enc + '&LH_Sold=1&LH_Complete=1'}) · "
-                                 f"[PriceCharting](https://www.pricecharting.com/search-products?type=prices&q={enc}) · "
-                                 f"Card Ladder / Alt: search *{q}* in their apps", False))
+        fields.append(("No match", "Couldn't find that card. Try `PC: card name | card number`, e.g. `PC: Rocks.D.Xebec | OP17-039`.", False))
+    enc = urllib.parse.quote_plus(f"{name} {num}".strip())
+    fields.append(("Recent sales", f"[eBay sold listings](https://www.ebay.com/sch/i.html?_nkw={enc}&LH_Sold=1&LH_Complete=1)", False))
     post_webhook(cfg["webhooks"]["buy_sell"], {
         "username": "TDM Price Check",
-        "content": f"<@{msg['author']['id']}> price check for **{name} | {num} | {grade}**",
-        "embeds": [embed(f"💰 {name} · {num} · {grade}", color=0x1ABC9C, fields=fields,
-                         footer="Values are market estimates, not offers. Always check recent sold comps.")]})
+        "content": f"<@{msg['author']['id']}> raw price check for **{label}**",
+        "allowed_mentions": {"parse": [], "users": [msg["author"]["id"]]},
+        "embeds": [embed(f"💰 {label} · Raw (ungraded)", color=0x1ABC9C, fields=fields,
+                         thumb=tcgplayer_image(hits[0][1]) if hits else None,
+                         footer="TCGplayer market price, near-mint raw, updated nightly · estimates, not offers.")]})
 
 
 def main():
@@ -120,7 +117,7 @@ def main():
         if msg.get("webhook_id") or msg["author"].get("bot"):
             continue
         for m in list(LINE.finditer(msg.get("content", "")))[:3]:
-            reply(cfg, msg, m)
+            reply(cfg, msg, m.group("q"))
     save_json("pricecheck_state.json", state)
 
 
