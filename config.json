@@ -33,10 +33,39 @@
       "region": "US / Global EN",
       "flag": "🇺🇸",
       "url": "https://en.onepiece-cardgame.com/news/",
-      "link_regex": "onepiece-cardgame\\.com/news/\\d+_\\d+\\.html",
+      "link_regex": "onepiece-cardgame\\.com/(news|products)/[A-Za-z0-9_-]+\\.html",
       "news_webhook": "WEBHOOK_TCG_NEWS",
       "reveal_webhook": "WEBHOOK_SET_REVEALS",
-      "color": 15158332
+      "color": 15158332,
+      "reveal_keywords": [
+        "booster pack",
+        "extra booster",
+        "premium booster",
+        "premium extra booster",
+        "starter deck",
+        "ultra deck",
+        "double pack",
+        "[op-",
+        "[eb-",
+        "[st-",
+        "[peb-",
+        "[prb-",
+        "card list"
+      ],
+      "reveal_exclude_keywords": [
+        "sleeve",
+        "playmat",
+        "play mat",
+        "card case",
+        "deck case",
+        "storage",
+        "binder",
+        "illustration box",
+        "accessor",
+        "official card sleeve",
+        "gift collection box"
+      ],
+      "note": "Only One Piece TCG card products go to #set-reveals; accessories and everything else go to #tcg-news"
     },
     {
       "id": "onepiece-jp",
@@ -47,7 +76,7 @@
       "url": "https://www.onepiece-cardgame.com/news/",
       "link_regex": "www\\.onepiece-cardgame\\.com/(news|topics)/[^\"'?#]+\\.(html|php)",
       "news_webhook": "WEBHOOK_TCG_NEWS",
-      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "reveal_webhook": "WEBHOOK_TCG_NEWS",
       "color": 15158332
     },
     {
@@ -67,7 +96,7 @@
         "card"
       ],
       "news_webhook": "WEBHOOK_TCG_NEWS",
-      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "reveal_webhook": "WEBHOOK_TCG_NEWS",
       "color": 16766720
     },
     {
@@ -79,7 +108,7 @@
       "url": "https://www.pokemon-card.com/info/",
       "link_regex": "pokemon-card\\.com/info/[^\"'?#]+",
       "news_webhook": "WEBHOOK_TCG_NEWS",
-      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "reveal_webhook": "WEBHOOK_TCG_NEWS",
       "color": 16766720
     },
     {
@@ -91,7 +120,7 @@
       "url": "https://riftbound.leagueoflegends.com/en-us/news/",
       "link_regex": "riftbound\\.leagueoflegends\\.com/en-us/news/[^\"'?#]+/[^\"'?#]+",
       "news_webhook": "WEBHOOK_TCG_NEWS",
-      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "reveal_webhook": "WEBHOOK_TCG_NEWS",
       "color": 3447003
     },
     {
@@ -104,7 +133,7 @@
       "url": "PUT_OFFICIAL_NARUTO_CARD_GAME_NEWS_URL_HERE",
       "link_regex": "news",
       "news_webhook": "WEBHOOK_TCG_NEWS",
-      "reveal_webhook": "WEBHOOK_SET_REVEALS",
+      "reveal_webhook": "WEBHOOK_TCG_NEWS",
       "color": 15105570
     },
     {
