@@ -315,9 +315,10 @@ def main():
             description="\n".join(gmovers) or "No graded moves past threshold today.",
             footer="Watchlist cards only · PriceCharting values or eBay sold medians (CompsAPI)")]}, dry_run=test)
         anomaly_lines += ganom
-    post_webhook(cfg["webhooks"]["sales_anomalies"], {"username": "TDM Sales Anomalies", "embeds": [embed(
+    if anomaly_lines:  # only post when something actually happened (no "quiet day" noise)
+      post_webhook(cfg["webhooks"]["sales_anomalies"], {"username": "TDM Sales Anomalies", "embeds": [embed(
         f"🚨 Sales Anomalies · {day}", color=0xE74C3C,
-        description="\n".join(anomaly_lines[:30]) or "Quiet day. Nothing unusual.",
+        description="\n".join(anomaly_lines[:30]),
         footer=f"Raw: ≥{cfg['market']['anomaly_pct']}% move on cards ≥{money(cfg['market']['anomaly_min_price'])} · Graded: price/volume spikes")]}, dry_run=test)
     if not test:
         state["last"] = now.date().isoformat()
