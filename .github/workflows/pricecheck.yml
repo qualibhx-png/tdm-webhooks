@@ -1,7 +1,7 @@
 name: Buy-sell price checks
 on:
   schedule:
-    - cron: '*/10 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch: {}
 permissions:
   contents: write
@@ -23,8 +23,6 @@ jobs:
           WEBHOOK_BUY_SELL: ${{ secrets.WEBHOOK_BUY_SELL }}
           DISCORD_READ_BOT_TOKEN: ${{ secrets.DISCORD_READ_BOT_TOKEN }}
           BUYSELL_CHANNEL_ID: ${{ secrets.BUYSELL_CHANNEL_ID }}
-          PRICECHARTING_TOKEN: ${{ secrets.PRICECHARTING_TOKEN }}
-          COMPSAPI_KEY: ${{ secrets.COMPSAPI_KEY }}
       - name: Save state
         if: always()
         run: |
