@@ -18,6 +18,20 @@ CONFIG_PATH = ROOT / "config.json"
 LA = ZoneInfo("America/Los_Angeles")
 UA = "TopDeckMerchant-Webhooks/1.0 (+community discord feed)"
 
+# Preview mode (TDM_PREVIEW=1): every live feed sends ONE sample to PREVIEW_WEBHOOK (#staff-alerts),
+# labelled with its real channel, no role pings, nothing saved. Real channels are never touched.
+PREVIEW = os.environ.get("TDM_PREVIEW") == "1"
+_PREVIEWED = set()
+CHANNELS = {
+    "WEBHOOK_SET_REVEALS": "#set-reveals", "WEBHOOK_TCG_NEWS": "#tcg-news",
+    "WEBHOOK_EVENT_WATCH": "#staff-alerts", "WEBHOOK_RESULTS_ONEPIECE": "#op-tournament-results",
+    "WEBHOOK_RESULTS_RIFTBOUND": "#riftbound-tournament-results", "WEBHOOK_MARKET_MOVERS": "#market-movers",
+    "WEBHOOK_SALES_ANOMALIES": "#sales-anomalies", "WEBHOOK_MARKET_POKEMON": "#pokemon-market",
+    "WEBHOOK_MARKET_ONEPIECE": "#one-piece-market", "WEBHOOK_MARKET_RIFTBOUND": "#riftbound-market",
+    "WEBHOOK_PLAYABLE_MOVERS": "#playable-movers", "WEBHOOK_COLLECTOR_MOVERS": "#collector-movers",
+    "WEBHOOK_OP_META": "#op-meta",
+}
+
 
 def load_config():
     with open(CONFIG_PATH, encoding="utf-8") as f:
@@ -36,6 +50,8 @@ def load_json(name, default):
 
 
 def save_json(name, obj):
+    if PREVIEW:
+        return  # preview never changes saved state
     DATA.mkdir(parents=True, exist_ok=True)
     compact = name.startswith(("snap_", "index_"))
     text = json.dumps(obj, indent=None if compact else 1, ensure_ascii=False, sort_keys=True,
@@ -66,6 +82,8 @@ def http_json(url, headers=None):
 # -------------------------------------------------------------- webhook ---
 def webhook_url(env_name):
     url = os.environ.get(env_name or "", "").strip()
+    if PREVIEW:  # only feeds that are live (secret set) get previewed, and only into PREVIEW_WEBHOOK
+        return (os.environ.get("PREVIEW_WEBHOOK", "").strip() or None) if url else None
     return url or None
 
 
@@ -102,6 +120,23 @@ def post_webhook(env_name, payload, thread_name=None, dry_run=False, files=None)
         return
     body = dict(payload)
     body.setdefault("allowed_mentions", {"parse": []})
+    if PREVIEW:
+        if env_name in _PREVIEWED:
+            log(f"[preview] already showed {env_name}; skipping")
+            return
+        _PREVIEWED.add(env_name)
+        roles = {v: k.replace("_", " ").title() for k, v in (load_config().get("roles") or {}).items()}
+        content = body.get("content", "")
+        pings = [roles.get(r, "role") for r in re.findall(r"<@&(\d+)>", content)]
+        content = re.sub(r"<@&\d+>\s*", "", content).strip()
+        note = f"🔍 **PREVIEW** · would post in **{CHANNELS.get(env_name, env_name)}**"
+        if thread_name:
+            note += f" as forum post *{thread_name[:100]}*"
+        if pings:
+            note += " · would ping " + ", ".join(f"@{p}" for p in pings)
+        body["content"] = note + (f"\n{content}" if content else "")
+        body["allowed_mentions"] = {"parse": []}
+        thread_name = None  # #staff-alerts is a normal text channel
     if thread_name:
         body["thread_name"] = thread_name[:100]
     if files:
@@ -127,7 +162,7 @@ def upsert_webhook(env_name, payload, key, dry_run=False):
     """Post once, then edit that same message on later runs (keeps channels tidy).
     Message ids live in data/webhook_messages.json under `key`; a new key means a fresh post."""
     url = webhook_url(env_name)
-    if dry_run or not url:
+    if dry_run or not url or PREVIEW:
         return post_webhook(env_name, payload, dry_run=dry_run)
     ids = load_json("webhook_messages.json", {})
     body = dict(payload)

@@ -12,7 +12,7 @@ Items whose title matches reveal keywords go to #set-reveals, everything else to
 import re
 import sys
 
-from common import embed, extract_links, http_get, load_config, load_json, log, post_webhook, save_json, with_ping
+from common import PREVIEW, embed, extract_links, http_get, load_config, load_json, log, post_webhook, save_json, with_ping
 
 STATE = "news_state.json"
 
@@ -109,6 +109,9 @@ def main():
         seen = set(state.get(sid, []))
         first_run = not seen
         new = [(u, t) for u, t in links if u not in seen]
+        if PREVIEW:  # newest item + newest reveal from each source, regardless of what's been seen
+            rev = next(((u, t) for u, t in links if classify(t, src, cfg) == "reveal"), None)
+            new, first_run = list(dict.fromkeys([x for x in [rev] + links[:1] if x])), False
         if first_run:
             log(f"[{sid}] first run: remembering {len(new)} existing items, not posting")
         else:

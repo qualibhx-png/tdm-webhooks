@@ -13,7 +13,7 @@ import re
 import sys
 from datetime import datetime, timedelta, timezone
 
-from common import embed, extract_links, http_get, http_json, load_config, load_json, log, post_webhook, save_json, strip_tags, with_ping
+from common import PREVIEW, embed, extract_links, http_get, http_json, load_config, load_json, log, post_webhook, save_json, strip_tags, with_ping
 
 STATE = "tournament_state.json"
 LIMITLESS = "https://play.limitlesstcg.com/api"
@@ -181,6 +181,20 @@ def main():
     state = load_json(STATE, {"seen": []})
     seen = set(state["seen"])
     first_run = not seen
+    if PREVIEW:  # one sample per live results channel: newest event (ChinoizeCup first for One Piece)
+        for game in cfg["tournament_games"]:
+            if not game.get("enabled", True):
+                continue
+            events = limitless_events(game, set(), test)
+            for src in game.get("result_pages", []):
+                if src.get("enabled", True):
+                    events = page_events(game, src, set()) + events
+            pick = next((e for e in events if "chinoize" in e.get("source", "").lower()), events[0] if events else None)
+            if pick:
+                post_event(game, pick, test)
+            else:
+                log(f"[preview] {game['name']}: no events found")
+        return
     if "--seed-chinoize" in sys.argv:
         # Go-live helper: remember every result already out, then post ONLY the newest
         # finished ChinoizeCup (one message), so later runs only post genuinely new events.
