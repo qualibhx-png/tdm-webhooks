@@ -1,5 +1,6 @@
 {
  "onepiece-en": [
+  "https://en.onepiece-cardgame.com/news/restriction-2611.html",
   "https://en.onepiece-cardgame.com/products/eb05.html",
   "https://en.onepiece-cardgame.com/products/op18.html",
   "https://en.onepiece-cardgame.com/news/02_382.html",
@@ -31,6 +32,7 @@
   "https://en.onepiece-cardgame.com/events/malltour2026.html"
  ],
  "onepiece-jp": [
+  "https://www.onepiece-cardgame.com/news/restriction-2611.html",
   "https://www.onepiece-cardgame.com/news/01_379.html",
   "https://www.onepiece-cardgame.com/news/restriction-261012.html"
  ],
@@ -168,8 +170,8 @@
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/riftbound-2027-premier-play",
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/riftbound-2027-local-play",
   "https://riftbound.leagueoflegends.com/en-us/news/announcements/riftbounds-2026-drawings",
-  "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/testing-start-of-game-rules",
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/regional-championships-competitive-integrity-prizing",
+  "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/testing-start-of-game-rules",
   "https://riftbound.leagueoflegends.com/en-us/news/announcements/preparing-for-the-radiance-pre-rift"
  ]
 }
