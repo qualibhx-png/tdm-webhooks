@@ -8768,6 +8768,960 @@
     }
    ],
    "url": "https://chinoizecupstats.com/tournaments/6af58c7300d53a11f5b91e38"
+  },
+  "6afdc0fcb2fccaf0272d581c": {
+   "date": "November 23, 2026",
+   "id": "6afdc0fcb2fccaf0272d581c",
+   "name": "[OP18] ChinoizeCup #139 MONDAY",
+   "players": 105,
+   "standings": [
+    {
+     "code": "OP09-042",
+     "country": "GB",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/ninjatrain",
+     "leader": "Buggy",
+     "place": 1,
+     "player": "NinjaTrain",
+     "record": "7-0"
+    },
+    {
+     "code": "OP11-040",
+     "country": "JP",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/lilykei",
+     "leader": "Monkey.D.Luffy",
+     "place": 2,
+     "player": "LilyKei",
+     "record": "6-1"
+    },
+    {
+     "code": "OP15-058",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/penaraul05",
+     "leader": "Enel",
+     "place": 3,
+     "player": "penguino s",
+     "record": "6-1"
+    },
+    {
+     "code": "OP17-039",
+     "country": "IL",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/gefen1",
+     "leader": "Rocks.D.Xebec",
+     "place": 4,
+     "player": "Gefen H",
+     "record": "6-1"
+    },
+    {
+     "code": "OP18-022",
+     "country": "DK",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/spartacus2224",
+     "leader": "Monkey.D.Luffy",
+     "place": 5,
+     "player": "Spartacus2224",
+     "record": "6-1"
+    },
+    {
+     "code": "ST10-002",
+     "country": "HR",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/pako",
+     "leader": "Monkey.D.Luffy",
+     "place": 6,
+     "player": "Pako",
+     "record": "6-1"
+    },
+    {
+     "code": "OP18-060",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/halox",
+     "leader": "Saint Gunko",
+     "place": 7,
+     "player": "Halox",
+     "record": "6-1"
+    },
+    {
+     "code": "OP13-001",
+     "country": "GB",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/snorlax1cynda",
+     "leader": "Monkey.D.Luffy",
+     "place": 8,
+     "player": "snorlax1cynda",
+     "record": "5-2"
+    },
+    {
+     "code": "OP17-039",
+     "country": "BO",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/domenico1997",
+     "leader": "Rocks.D.Xebec",
+     "place": 9,
+     "player": "DOMENICO1997",
+     "record": "5-2"
+    },
+    {
+     "code": "ST10-002",
+     "country": "IT",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/electroblazex",
+     "leader": "Monkey.D.Luffy",
+     "place": 10,
+     "player": "ElectroBlazeX",
+     "record": "5-2"
+    },
+    {
+     "code": "ST10-002",
+     "country": "IT",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/anacleto",
+     "leader": "Monkey.D.Luffy",
+     "place": 11,
+     "player": "Anacleto",
+     "record": "5-2"
+    },
+    {
+     "code": "OP09-042",
+     "country": "HR",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/gligi",
+     "leader": "Buggy",
+     "place": 12,
+     "player": "Gligi",
+     "record": "5-2"
+    },
+    {
+     "code": "OP15-058",
+     "country": "IT",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/xatoliuk",
+     "leader": "Enel",
+     "place": 13,
+     "player": "Xatoliuk",
+     "record": "5-2"
+    },
+    {
+     "code": "OP15-058",
+     "country": "HR",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/bornax10",
+     "leader": "Enel",
+     "place": 14,
+     "player": "bornax10",
+     "record": "5-2"
+    },
+    {
+     "code": "OP18-060",
+     "country": "NL",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/jellybeanzs",
+     "leader": "Saint Gunko",
+     "place": 15,
+     "player": "Jellybeanzs",
+     "record": "5-2"
+    },
+    {
+     "code": "ST10-002",
+     "country": "ES",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/rubentr",
+     "leader": "Monkey.D.Luffy",
+     "place": 16,
+     "player": "RubenTR",
+     "record": "5-2"
+    },
+    {
+     "code": "OP14-001",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/gamba",
+     "leader": "Trafalgar Law",
+     "place": 17,
+     "player": "Gamba",
+     "record": "5-2"
+    },
+    {
+     "code": "OP18-079",
+     "country": "IT",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/mark251198",
+     "leader": "Spandam",
+     "place": 18,
+     "player": "Mark251198",
+     "record": "5-2"
+    },
+    {
+     "code": "OP18-060",
+     "country": "IT",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/fratara",
+     "leader": "Saint Gunko",
+     "place": 19,
+     "player": "FraTara",
+     "record": "5-2"
+    },
+    {
+     "code": "OP09-042",
+     "country": "LU",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/kevnoa",
+     "leader": "Buggy",
+     "place": 20,
+     "player": "Kevnoa",
+     "record": "5-2"
+    },
+    {
+     "code": "OP18-022",
+     "country": "IL",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/proidan",
+     "leader": "Monkey.D.Luffy",
+     "place": 21,
+     "player": "PROidan",
+     "record": "4-3"
+    },
+    {
+     "code": "OP18-079",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/fuat",
+     "leader": "Spandam",
+     "place": 22,
+     "player": "TTP Fuat",
+     "record": "4-3"
+    },
+    {
+     "code": "OP18-060",
+     "country": "IT",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/killnap",
+     "leader": "Saint Gunko",
+     "place": 23,
+     "player": "killnap",
+     "record": "4-3"
+    },
+    {
+     "code": "OP09-042",
+     "country": "",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/kuchen",
+     "leader": "Buggy",
+     "place": 24,
+     "player": "TTP Kuchen",
+     "record": "4-3"
+    },
+    {
+     "code": "OP17-039",
+     "country": "",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/charnl",
+     "leader": "Rocks.D.Xebec",
+     "place": 25,
+     "player": "CharNL",
+     "record": "4-3"
+    },
+    {
+     "code": "OP13-001",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/030gambit",
+     "leader": "Monkey.D.Luffy",
+     "place": 26,
+     "player": "030Gambit",
+     "record": "4-3"
+    },
+    {
+     "code": "OP18-060",
+     "country": "",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/loremassa",
+     "leader": "Saint Gunko",
+     "place": 27,
+     "player": "loremassa",
+     "record": "4-3"
+    },
+    {
+     "code": "OP09-042",
+     "country": "CH",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/gringoloco",
+     "leader": "Buggy",
+     "place": 28,
+     "player": "Gringoloco",
+     "record": "4-2"
+    },
+    {
+     "code": "OP09-042",
+     "country": "FR",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/dissonance075",
+     "leader": "Buggy",
+     "place": 29,
+     "player": "Dissonance075",
+     "record": "4-3"
+    },
+    {
+     "code": "OP14-001",
+     "country": "FR",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/poilito",
+     "leader": "Trafalgar Law",
+     "place": 30,
+     "player": "Poilito",
+     "record": "4-3"
+    },
+    {
+     "code": "EB05-010",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/volkiso",
+     "leader": "Nico Robin",
+     "place": 31,
+     "player": "TTP Voly",
+     "record": "4-3"
+    },
+    {
+     "code": "OP13-004",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/asce712",
+     "leader": "Sabo",
+     "place": 32,
+     "player": "asce712",
+     "record": "4-3"
+    },
+    {
+     "code": "OP15-022",
+     "country": "GB",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/bhavya",
+     "leader": "Brook",
+     "place": 33,
+     "player": "Bhavya",
+     "record": "4-3"
+    },
+    {
+     "code": "EB05-010",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/tenmaple",
+     "leader": "Nico Robin",
+     "place": 34,
+     "player": "TenMaple",
+     "record": "4-3"
+    },
+    {
+     "code": "OP09-042",
+     "country": "",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/lunaticpanzer",
+     "leader": "Buggy",
+     "place": 35,
+     "player": "LunaticPanzer",
+     "record": "3-4"
+    },
+    {
+     "code": "OP18-060",
+     "country": "SE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/hashtagemb",
+     "leader": "Saint Gunko",
+     "place": 36,
+     "player": "HashtagEMB",
+     "record": "3-2"
+    },
+    {
+     "code": "OP17-020",
+     "country": "",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/nesss",
+     "leader": "Shanks",
+     "place": 37,
+     "player": "NESSS",
+     "record": "3-3"
+    },
+    {
+     "code": "OP18-022",
+     "country": "GB",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/anbornsky",
+     "leader": "Monkey.D.Luffy",
+     "place": 38,
+     "player": "AnbornSky",
+     "record": "3-4"
+    },
+    {
+     "code": "OP09-042",
+     "country": "ES",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/krabbys",
+     "leader": "Buggy",
+     "place": 39,
+     "player": "krabbys",
+     "record": "3-4"
+    },
+    {
+     "code": "OP17-039",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/goroseibest",
+     "leader": "Rocks.D.Xebec",
+     "place": 40,
+     "player": "GoroseiBest",
+     "record": "3-2"
+    },
+    {
+     "code": "OP18-060",
+     "country": "",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/moses1234",
+     "leader": "Saint Gunko",
+     "place": 41,
+     "player": "Moses1234",
+     "record": "3-4"
+    },
+    {
+     "code": "EB04-001",
+     "country": "FR",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/rablouze",
+     "leader": "Jewelry Bonney",
+     "place": 42,
+     "player": "Rablouze",
+     "record": "3-4"
+    },
+    {
+     "code": "ST30-001",
+     "country": "GB",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/cakey_tcg",
+     "leader": "Luffy & Ace",
+     "place": 43,
+     "player": "Cakey_TCG",
+     "record": "3-2"
+    },
+    {
+     "code": "OP17-039",
+     "country": "BE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/xmingo",
+     "leader": "Rocks.D.Xebec",
+     "place": 44,
+     "player": "xMingo",
+     "record": "3-4"
+    },
+    {
+     "code": "OP13-001",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/ssjrose",
+     "leader": "Monkey.D.Luffy",
+     "place": 45,
+     "player": "Ssjrose",
+     "record": "3-2"
+    },
+    {
+     "code": "OP18-060",
+     "country": "HR",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/divalol",
+     "leader": "Saint Gunko",
+     "place": 46,
+     "player": "divalol",
+     "record": "3-3"
+    },
+    {
+     "code": "OP18-060",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/nima",
+     "leader": "Saint Gunko",
+     "place": 47,
+     "player": "Nima",
+     "record": "3-4"
+    },
+    {
+     "code": "OP18-060",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/slodea",
+     "leader": "Saint Gunko",
+     "place": 48,
+     "player": "Slodea",
+     "record": "3-4"
+    },
+    {
+     "code": "EB05-010",
+     "country": "NL",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/palziejp",
+     "leader": "Nico Robin",
+     "place": 49,
+     "player": "PalzieJP",
+     "record": "3-3"
+    },
+    {
+     "code": "OP18-060",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/bigtdagoat",
+     "leader": "Saint Gunko",
+     "place": 50,
+     "player": "BigTdaGOAT",
+     "record": "3-2"
+    },
+    {
+     "code": "OP17-039",
+     "country": "CL",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/74peeteer",
+     "leader": "Rocks.D.Xebec",
+     "place": 51,
+     "player": "74peeteer",
+     "record": "3-4"
+    },
+    {
+     "code": "OP09-042",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/kereminator",
+     "leader": "Buggy",
+     "place": 52,
+     "player": "Kereminator",
+     "record": "2-2"
+    },
+    {
+     "code": "ST30-001",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/thebigl",
+     "leader": "Luffy & Ace",
+     "place": 53,
+     "player": "TheBigL",
+     "record": "2-2"
+    },
+    {
+     "code": "OP17-039",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/maxifree",
+     "leader": "Rocks.D.Xebec",
+     "place": 54,
+     "player": "MaxiFree",
+     "record": "2-2"
+    },
+    {
+     "code": "OP17-039",
+     "country": "UA",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/solmyr",
+     "leader": "Rocks.D.Xebec",
+     "place": 55,
+     "player": "Solmyr",
+     "record": "2-3"
+    },
+    {
+     "code": "OP17-039",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/esmat",
+     "leader": "Rocks.D.Xebec",
+     "place": 56,
+     "player": "Esmat",
+     "record": "2-4"
+    },
+    {
+     "code": "OP17-039",
+     "country": "AT",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/gianluca28",
+     "leader": "Rocks.D.Xebec",
+     "place": 57,
+     "player": "Gianluca Di Costanzo",
+     "record": "2-4"
+    },
+    {
+     "code": "OP18-060",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/uphudingi",
+     "leader": "Saint Gunko",
+     "place": 58,
+     "player": "uphudingi",
+     "record": "2-5"
+    },
+    {
+     "code": "EB05-010",
+     "country": "NL",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/dasobankz",
+     "leader": "Nico Robin",
+     "place": 59,
+     "player": "Dasobankz",
+     "record": "2-3"
+    },
+    {
+     "code": "OP17-039",
+     "country": "AU",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/bracky33",
+     "leader": "Rocks.D.Xebec",
+     "place": 60,
+     "player": "Bracky33",
+     "record": "2-3"
+    },
+    {
+     "code": "OP18-060",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/mugiwarab",
+     "leader": "Saint Gunko",
+     "place": 61,
+     "player": "MugiwaraB",
+     "record": "2-2"
+    },
+    {
+     "code": "OP15-058",
+     "country": "GB",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/brandon1448",
+     "leader": "Enel",
+     "place": 62,
+     "player": "brandon1448",
+     "record": "2-3"
+    },
+    {
+     "code": "OP18-060",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/wiggi",
+     "leader": "Saint Gunko",
+     "place": 63,
+     "player": "Wiggi",
+     "record": "1-3"
+    },
+    {
+     "code": "OP12-061",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/jcubs29",
+     "leader": "Donquixote Rosinante",
+     "place": 64,
+     "player": "jcubs29",
+     "record": "1-2"
+    },
+    {
+     "code": "OP15-058",
+     "country": "ES",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/wortaxx",
+     "leader": "Enel",
+     "place": 65,
+     "player": "Wortaxx",
+     "record": "1-2"
+    },
+    {
+     "code": "ST10-002",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/kondoriano98",
+     "leader": "Monkey.D.Luffy",
+     "place": 66,
+     "player": "Kondoriano98",
+     "record": "1-2"
+    },
+    {
+     "code": "OP15-058",
+     "country": "IE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/macros20",
+     "leader": "Enel",
+     "place": 67,
+     "player": "Macros20",
+     "record": "1-3"
+    },
+    {
+     "code": "OP13-004",
+     "country": "BE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/jekke",
+     "leader": "Sabo",
+     "place": 68,
+     "player": "Jekke",
+     "record": "1-2"
+    },
+    {
+     "code": "OP18-021",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/crazyas1an",
+     "leader": "Franky",
+     "place": 69,
+     "player": "Tommy N",
+     "record": "1-2"
+    },
+    {
+     "code": "OP09-042",
+     "country": "LU",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/joyboylu",
+     "leader": "Buggy",
+     "place": 70,
+     "player": "JoyboyLU",
+     "record": "1-3"
+    },
+    {
+     "code": "OP18-060",
+     "country": "NZ",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/mrwombattcgg",
+     "leader": "Saint Gunko",
+     "place": 71,
+     "player": "mrwombattcgg",
+     "record": "1-3"
+    },
+    {
+     "code": "OP17-039",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/r0xtar",
+     "leader": "Rocks.D.Xebec",
+     "place": 72,
+     "player": "r0xtar",
+     "record": "1-2"
+    },
+    {
+     "code": "OP15-058",
+     "country": "PE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/canepis",
+     "leader": "Enel",
+     "place": 73,
+     "player": "Canepis",
+     "record": "1-2"
+    },
+    {
+     "code": "OP18-060",
+     "country": "",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/xevi",
+     "leader": "Saint Gunko",
+     "place": 74,
+     "player": "Xevi",
+     "record": "1-2"
+    },
+    {
+     "code": "OP09-042",
+     "country": "CH",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/hitonole",
+     "leader": "Buggy",
+     "place": 75,
+     "player": "HitoNole",
+     "record": "1-6"
+    },
+    {
+     "code": "OP18-079",
+     "country": "GB",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/nytrex",
+     "leader": "Spandam",
+     "place": 76,
+     "player": "nytrex",
+     "record": "1-2"
+    },
+    {
+     "code": "OP18-001",
+     "country": "CH",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/traumis",
+     "leader": "Karoo",
+     "place": 77,
+     "player": "Traumis",
+     "record": "1-3"
+    },
+    {
+     "code": "OP18-021",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/petesaad4",
+     "leader": "Franky",
+     "place": 78,
+     "player": "petesaad4",
+     "record": "1-1"
+    },
+    {
+     "code": "EB05-010",
+     "country": "AR",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/cyranorock",
+     "leader": "Nico Robin",
+     "place": 79,
+     "player": "Cyranorock",
+     "record": "1-3"
+    },
+    {
+     "code": "EB05-010",
+     "country": "IT",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/celix91",
+     "leader": "Nico Robin",
+     "place": 80,
+     "player": "Celix91",
+     "record": "1-2"
+    },
+    {
+     "code": "OP18-060",
+     "country": "ES",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/eljonbas",
+     "leader": "Saint Gunko",
+     "place": 81,
+     "player": "ElJonbas",
+     "record": "1-2"
+    },
+    {
+     "code": "OP14-001",
+     "country": "CH",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/squcook",
+     "leader": "Trafalgar Law",
+     "place": 82,
+     "player": "Squcook",
+     "record": "1-2"
+    },
+    {
+     "code": "OP14-041",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/imscreex",
+     "leader": "Boa Hancock",
+     "place": 83,
+     "player": "ImScreex",
+     "record": "1-2"
+    },
+    {
+     "code": "OP17-039",
+     "country": "CH",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/gyan",
+     "leader": "Rocks.D.Xebec",
+     "place": 84,
+     "player": "Gyan",
+     "record": "0-1"
+    },
+    {
+     "code": "OP18-079",
+     "country": "CA",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/simpiii",
+     "leader": "Spandam",
+     "place": 85,
+     "player": "Simpiii",
+     "record": "0-1"
+    },
+    {
+     "code": "OP15-022",
+     "country": "NL",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/filipipirat",
+     "leader": "Brook",
+     "place": 86,
+     "player": "filipipirat",
+     "record": "0-2"
+    },
+    {
+     "code": "OP09-042",
+     "country": "PT",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/bmkid",
+     "leader": "Buggy",
+     "place": 87,
+     "player": "BMKid",
+     "record": "0-2"
+    },
+    {
+     "code": "OP18-060",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/daeyang",
+     "leader": "Saint Gunko",
+     "place": 88,
+     "player": "Daeyang",
+     "record": "0-2"
+    },
+    {
+     "code": "EB05-010",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/wetbacon506",
+     "leader": "Nico Robin",
+     "place": 89,
+     "player": "Wetbacon506",
+     "record": "0-1"
+    },
+    {
+     "code": "OP13-001",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/rush053335",
+     "leader": "Monkey.D.Luffy",
+     "place": 90,
+     "player": "Simon K",
+     "record": "0-2"
+    },
+    {
+     "code": "OP18-079",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/jtd",
+     "leader": "Spandam",
+     "place": 91,
+     "player": "JTD",
+     "record": "0-1"
+    },
+    {
+     "code": "EB05-010",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/llpilimumap",
+     "leader": "Nico Robin",
+     "place": 92,
+     "player": "llpilimumap",
+     "record": "0-2"
+    },
+    {
+     "code": "ST30-001",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/omegat0r",
+     "leader": "Luffy & Ace",
+     "place": 93,
+     "player": "omegat0r",
+     "record": "0-2"
+    },
+    {
+     "code": "OP18-079",
+     "country": "NL",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/twitch_queenbreakzz",
+     "leader": "Spandam",
+     "place": 94,
+     "player": "Twitch_queenbreakzz",
+     "record": "0-3"
+    },
+    {
+     "code": "OP18-022",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/freajski",
+     "leader": "Monkey.D.Luffy",
+     "place": 95,
+     "player": "freajski",
+     "record": "0-2"
+    },
+    {
+     "code": "OP18-079",
+     "country": "US",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/egroch",
+     "leader": "Spandam",
+     "place": 96,
+     "player": "egroch",
+     "record": "0-2"
+    },
+    {
+     "code": "OP18-060",
+     "country": "TR",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/mblawluffy",
+     "leader": "Saint Gunko",
+     "place": 97,
+     "player": "mblawluffy",
+     "record": "0-2"
+    },
+    {
+     "code": "OP17-039",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/kwisa",
+     "leader": "Rocks.D.Xebec",
+     "place": 98,
+     "player": "kwisa",
+     "record": "0-2"
+    },
+    {
+     "code": "OP18-021",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/zockerdima",
+     "leader": "Franky",
+     "place": 99,
+     "player": "zockerdima",
+     "record": "0-2"
+    },
+    {
+     "code": "OP18-021",
+     "country": "GB",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/ziiaaaac",
+     "leader": "Franky",
+     "place": 100,
+     "player": "Ziiaaaac",
+     "record": "0-2"
+    },
+    {
+     "code": "ST10-002",
+     "country": "IT",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/cadazzas",
+     "leader": "Monkey.D.Luffy",
+     "place": 101,
+     "player": "Cadazzas",
+     "record": "0-2"
+    },
+    {
+     "code": "OP18-060",
+     "country": "FR",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/yolomoustachio",
+     "leader": "Saint Gunko",
+     "place": 102,
+     "player": "yolomoustachio",
+     "record": "0-3"
+    },
+    {
+     "code": "OP12-061",
+     "country": "BE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/lukas123",
+     "leader": "Donquixote Rosinante",
+     "place": 103,
+     "player": "lukas123",
+     "record": "0-2"
+    },
+    {
+     "code": "OP06-022",
+     "country": "GB",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/maestroman",
+     "leader": "Yamato",
+     "place": 104,
+     "player": "MaestroMan",
+     "record": "0-3"
+    },
+    {
+     "code": "OP09-042",
+     "country": "DE",
+     "decklist": "https://chinoizecupstats.com/decklists/6afdc0fcb2fccaf0272d581c/niederstrecken",
+     "leader": "Buggy",
+     "place": 105,
+     "player": "niederstrecken",
+     "record": "0-1"
+    }
+   ],
+   "url": "https://chinoizecupstats.com/tournaments/6afdc0fcb2fccaf0272d581c"
   }
  }
 }
