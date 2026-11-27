@@ -37,6 +37,9 @@
   "https://www.onepiece-cardgame.com/news/restriction-261012.html"
  ],
  "pokemon-jp": [
+  "https://www.pokemon-card.com/info/005783.html",
+  "https://www.pokemon-card.com/info/005786.html",
+  "https://www.pokemon-card.com/info/005740.html",
   "https://www.pokemon-card.com/info/005767.html",
   "https://www.pokemon-card.com/info/005764.html",
   "https://www.pokemon-card.com/info/005559.html",
@@ -52,7 +55,6 @@
   "https://www.pokemon-card.com/info/005756.html",
   "https://www.pokemon-card.com/info/005738.html",
   "https://www.pokemon-card.com/info/005737.html",
-  "https://www.pokemon-card.com/info/005740.html",
   "https://www.pokemon-card.com/info/004753.html",
   "https://www.pokemon-card.com/info/005728.html",
   "https://www.pokemon-card.com/info/005701.html",
@@ -174,7 +176,7 @@
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/riftbound-2027-local-play",
   "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/testing-start-of-game-rules",
   "https://riftbound.leagueoflegends.com/en-us/news/announcements/riftbounds-2026-drawings",
-  "https://riftbound.leagueoflegends.com/en-us/news/announcements/preparing-for-the-radiance-pre-rift",
-  "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/regional-championships-competitive-integrity-prizing"
+  "https://riftbound.leagueoflegends.com/en-us/news/organizedplay/regional-championships-competitive-integrity-prizing",
+  "https://riftbound.leagueoflegends.com/en-us/news/announcements/preparing-for-the-radiance-pre-rift"
  ]
 }
